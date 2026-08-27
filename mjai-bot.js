@@ -91,6 +91,6 @@ const sock = net.connect(port, host, ()=>{
         sock.write(JSON.stringify(reply) + '\n');
     });
     sock.on('close', ()=>{
-        fs.writeFileSync(outfile, JSON.stringify(paipu), 'utf-8');
+        if (outfile) fs.writeFileSync(outfile, JSON.stringify(paipu), 'utf-8');
     });
 });
