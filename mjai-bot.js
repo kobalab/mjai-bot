@@ -74,6 +74,11 @@ const sock = net.connect(port, host, ()=>{
                 };
             }
         }
+        else if (msg.type == 'dahai') {
+            let dapai = { l: lunban[msg.actor],
+                          p: pai(msg.pai) + (msg.tsumogiri ? '_' : '') };
+            paipu.log[paipu.log.length - 1].push({ dapai: dapai });
+        }
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
     });
