@@ -37,6 +37,18 @@ const sock = net.connect(port, host, ()=>{
                 point:  []
             };
         }
+        else if (msg.type == 'start_kyoku') {
+            let qipai = {
+                zhuangfeng: { E:0, S:1, W:2, N:3 }[msg.bakaze],
+                jushu:      msg.kyoku - 1,
+                changbang:  msg.honba,
+                lizhibang:  msg.kyotaku,
+                defen:      paipu.defen.concat(),
+                baopai:     msg.dora_marker,
+                shoupai:    ['', '','',''],
+            };
+            paipu.log.push([ { qipai: qipai } ]);
+        }
         else if (msg.type == 'tsumo') {
             if (msg.actor == id) {
                 reply = {
