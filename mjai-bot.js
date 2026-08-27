@@ -114,6 +114,13 @@ const sock = net.connect(port, host, ()=>{
             board.fulou(fulou);
             all_fulou[fulou.l].push(fulou.m);
         }
+        else if (msg.type == 'ankan') {
+            let gang = { l: lunban[msg.actor],
+                         m: mianzi(msg.actor, msg.actor, ...msg.consumed) };
+            paipu.log[paipu.log.length - 1].push({ gang: gang });
+            board.gang(gang);
+            all_fulou[gang.l].push(gang.m);
+        }
         else if (msg.type == 'dora') {
             let kaigang = { baopai: pai(msg.dora_marker) };
             paipu.log[paipu.log.length - 1].push({ kaigang: kaigang });
