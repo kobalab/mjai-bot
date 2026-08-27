@@ -21,7 +21,7 @@ function pai(p) {
 
 const sock = net.connect(port, host, ()=>{
 
-    let id, paipu = {}, lunban;
+    let id, paipu = {}, lunban, lizhi;
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -60,6 +60,7 @@ const sock = net.connect(port, host, ()=>{
                 qipai.shoupai[lunban[id]]
                         = msg.tehais[id].map(p => pai(p)).join('');
             }
+            lizhi = false;
             paipu.log.push([ { qipai: qipai } ]);
         }
         else if (msg.type == 'tsumo') {
@@ -76,8 +77,15 @@ const sock = net.connect(port, host, ()=>{
         }
         else if (msg.type == 'dahai') {
             let dapai = { l: lunban[msg.actor],
-                          p: pai(msg.pai) + (msg.tsumogiri ? '_' : '') };
+                          p: pai(msg.pai) + (msg.tsumogiri ? '_' : '')
+                                          + (lizhi         ? '*' : '')};
             paipu.log[paipu.log.length - 1].push({ dapai: dapai });
+        }
+        else if (msg.type == 'reach') {
+            lizhi = true;
+        }
+        else if (msg.type == 'reach_accepted') {
+            lizhi = false;
         }
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
