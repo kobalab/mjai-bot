@@ -68,13 +68,14 @@ const sock = net.connect(port, host, ()=>{
                 jushu:      msg.kyoku - 1,
                 changbang:  msg.honba,
                 lizhibang:  msg.kyotaku,
-                defen:      paipu.defen.concat(),
+                defen:      [],
                 baopai:     pai(msg.dora_marker),
                 shoupai:    ['', '','',''],
             };
             lunban = [];
             for (let id = 0; id < 4; id++) {
                 lunban[id] = (4 - paipu.qijia + 4 - qipai.jushu + id) % 4;
+                qipai.defen[lunban[id]] = paipu.defen[id];
                 qipai.shoupai[lunban[id]]
                         = msg.tehais[id].map(p => pai(p)).join('');
             }
@@ -142,6 +143,14 @@ const sock = net.connect(port, host, ()=>{
                 hule.shoupai += ',' + all_fulou[hule.l].join(',');
             }
             paipu.log[paipu.log.length - 1].push({ hule: hule });
+
+            paipu.defen = msg.scores.concat();
+        }
+        else if (msg.type == 'ryukyoku') {
+            paipu.defen = msg.scores.concat();
+        }
+        else if (msg.type == 'end_game') {
+            paipu.defen = msg.scores.concat();
         }
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
