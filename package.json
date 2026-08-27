@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/kobalab/mjai-bot/issues"
   },
-  "homepage": "https://github.com/kobalab/mjai-bot#readme"
+  "homepage": "https://github.com/kobalab/mjai-bot#readme",
+  "dependencies": {
+    "@kobalab/majiang-core": "^1.4.1"
+  }
 }
