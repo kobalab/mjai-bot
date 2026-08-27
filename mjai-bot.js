@@ -27,6 +27,15 @@ const sock = net.connect(port, host, ()=>{
         }
         else if (msg.type == 'start_game') {
             id = msg.id;
+            paipu = {
+                title:  'Mjai',
+                player: msg.names.concat(),
+                qijia:  0,
+                log:    [],
+                defen:  [ 25000, 25000, 25000, 25000 ],
+                rank:   [],
+                point:  []
+            };
         }
         else if (msg.type == 'tsumo') {
             if (msg.actor == id) {
