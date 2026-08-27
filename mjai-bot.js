@@ -114,6 +114,11 @@ const sock = net.connect(port, host, ()=>{
             board.fulou(fulou);
             all_fulou[fulou.l].push(fulou.m);
         }
+        else if (msg.type == 'dora') {
+            let kaigang = { baopai: pai(msg.dora_marker) };
+            paipu.log[paipu.log.length - 1].push({ kaigang: kaigang });
+            board.kaigang(kaigang);
+        }
         else if (msg.type == 'reach') {
             lizhi = true;
         }
