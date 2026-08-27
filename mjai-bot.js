@@ -12,9 +12,16 @@ const port = + process.argv[2] || 11600;
 
 const outfile = process.argv[4] && path.resolve(process.argv[4]);
 
+function pai(p) {
+    if (p == '?') return '';
+    if (p.length == 1) return 'z' + { E:1, S:2, W:3, N:4, P:5, F:6, C:7 }[p];
+    let n = + p[0], s = p[1];
+    return s + (p[2] == 'r' ? 0 : n);
+}
+
 const sock = net.connect(port, host, ()=>{
 
-    let id, paipu = {};
+    let id, paipu = {}, lunban;
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -44,9 +51,15 @@ const sock = net.connect(port, host, ()=>{
                 changbang:  msg.honba,
                 lizhibang:  msg.kyotaku,
                 defen:      paipu.defen.concat(),
-                baopai:     msg.dora_marker,
+                baopai:     pai(msg.dora_marker),
                 shoupai:    ['', '','',''],
             };
+            lunban = [];
+            for (let id = 0; id < 4; id++) {
+                lunban[id] = (4 - paipu.qijia + 4 - qipai.jushu + id) % 4;
+                qipai.shoupai[lunban[id]]
+                        = msg.tehais[id].map(p => pai(p)).join('');
+            }
             paipu.log.push([ { qipai: qipai } ]);
         }
         else if (msg.type == 'tsumo') {
