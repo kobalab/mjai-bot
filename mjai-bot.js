@@ -12,6 +12,8 @@ const port = + process.argv[2] || 11600;
 
 const outfile = process.argv[4] && path.resolve(process.argv[4]);
 
+const Majiang = require('@kobalab/majiang-core');
+
 function pai(p) {
     if (p == '?') return '';
     if (p.length == 1) return 'z' + { E:1, S:2, W:3, N:4, P:5, F:6, C:7 }[p];
@@ -21,7 +23,9 @@ function pai(p) {
 
 const sock = net.connect(port, host, ()=>{
 
-    let id, paipu = {}, lunban, lizhi;
+    let id, paipu = {},
+        board = new Majiang.Board(),
+        lunban, lizhi;
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -43,6 +47,14 @@ const sock = net.connect(port, host, ()=>{
                 rank:   [],
                 point:  []
             };
+            let kaiju = {
+                id:     msg.id,
+                rule:   Majiang.rule(),
+                title:  paipu.title,
+                player: msg.names.concat(),
+                qijia:  paipu.qijia
+            };
+            board.kaiju(kaiju);
         }
         else if (msg.type == 'start_kyoku') {
             let qipai = {
@@ -62,10 +74,12 @@ const sock = net.connect(port, host, ()=>{
             }
             lizhi = false;
             paipu.log.push([ { qipai: qipai } ]);
+            board.qipai(qipai);
         }
         else if (msg.type == 'tsumo') {
             let zimo = { l: lunban[msg.actor], p: pai(msg.pai)};
             paipu.log[paipu.log.length - 1].push({ zimo: zimo });
+            board.zimo(zimo);
             if (msg.actor == id) {
                 reply = {
                     type: 'dahai',
@@ -80,6 +94,7 @@ const sock = net.connect(port, host, ()=>{
                           p: pai(msg.pai) + (msg.tsumogiri ? '_' : '')
                                           + (lizhi         ? '*' : '')};
             paipu.log[paipu.log.length - 1].push({ dapai: dapai });
+            board.dapai(dapai);
         }
         else if (msg.type == 'reach') {
             lizhi = true;
