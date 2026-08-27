@@ -2,14 +2,19 @@
 
 "use strict";
 
+const fs   = require('fs');
+const path = require('path');
+
 const net = require('net');
 
 const host = process.argv[3]   || 'localhost';
 const port = + process.argv[2] || 11600;
 
+const outfile = process.argv[4] && path.resolve(process.argv[4]);
+
 const sock = net.connect(port, host, ()=>{
 
-    let id;
+    let id, paipu = {};
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -35,5 +40,8 @@ const sock = net.connect(port, host, ()=>{
         }
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
+    });
+    sock.on('close', ()=>{
+        fs.writeFileSync(outfile, JSON.stringify(paipu), 'utf-8');
     });
 });
