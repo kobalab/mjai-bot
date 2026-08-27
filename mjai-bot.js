@@ -63,6 +63,8 @@ const sock = net.connect(port, host, ()=>{
             paipu.log.push([ { qipai: qipai } ]);
         }
         else if (msg.type == 'tsumo') {
+            let zimo = { l: lunban[msg.actor], p: pai(msg.pai)};
+            paipu.log[paipu.log.length - 1].push({ zimo: zimo });
             if (msg.actor == id) {
                 reply = {
                     type: 'dahai',
