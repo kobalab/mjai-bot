@@ -120,6 +120,8 @@ const sock = net.connect(port, host, ()=>{
                 hupai:    msg.yakus.map(h =>({ name: h[0], fanshu: h[1] })),
                 fenpei:   fenpei
             };
+            if (hule.baojia != null) hule.shoupai += pai(msg.pai);
+
             paipu.log[paipu.log.length - 1].push({ hule: hule });
         }
         console.log('->', reply);
