@@ -21,11 +21,17 @@ function pai(p) {
     return s + (p[2] == 'r' ? 0 : n);
 }
 
+function mianzi(l, t, ...p) {
+    let d = ['','+','=','-'][(4 + t - l) % 4];
+    return Majiang.Shoupai.valid_mianzi(
+                p.map(p => pai(p)).join('').replace(/(?<=\d)[mpsz]/g,'') + d);
+}
+
 const sock = net.connect(port, host, ()=>{
 
     let id, paipu = {},
         board = new Majiang.Board(),
-        lunban, lizhi;
+        lunban, lizhi, all_fulou = [[],[],[],[]];
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -96,6 +102,16 @@ const sock = net.connect(port, host, ()=>{
             paipu.log[paipu.log.length - 1].push({ dapai: dapai });
             board.dapai(dapai);
         }
+        else if (msg.type == 'chi' || msg.type == 'pon' ||
+                 msg.type ==  'daiminkan')
+        {
+            let fulou = { l: lunban[msg.actor],
+                          m: mianzi(msg.actor, msg.target,
+                                    ...msg.consumed, msg.pai) };
+            paipu.log[paipu.log.length - 1].push({ fulou: fulou });
+            board.fulou(fulou);
+            all_fulou[fulou.l].push(fulou.m);
+        }
         else if (msg.type == 'reach') {
             lizhi = true;
         }
@@ -121,7 +137,9 @@ const sock = net.connect(port, host, ()=>{
                 fenpei:   fenpei
             };
             if (hule.baojia != null) hule.shoupai += pai(msg.pai);
-
+            if (all_fulou[hule.l].length) {
+                hule.shoupai += ',' + all_fulou[hule.l].join(',');
+            }
             paipu.log[paipu.log.length - 1].push({ hule: hule });
         }
         console.log('->', reply);
