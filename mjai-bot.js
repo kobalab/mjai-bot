@@ -87,6 +87,26 @@ const sock = net.connect(port, host, ()=>{
         else if (msg.type == 'reach_accepted') {
             lizhi = false;
         }
+        else if (msg.type == 'hora') {
+            let fenpei = [];
+            for (let id = 0; id < 4; id++) {
+                fenpei[lunban[id]] = msg.deltas[id];
+            }
+            let hule = {
+                l:        lunban[msg.actor],
+                shoupai:  msg.hora_tehais.map(p => pai(p)).join(''),
+                baojia:   msg.actor == msg.target ? null : lunban[msg.target],
+                fubaopai: msg.uradora_markers.length
+                                ? msg.uradora_markers.map(p => pai(p))
+                                : undefined,
+                fu:       msg.fu,
+                fanshu:   msg.fan,
+                defen:    msg.hora_points,
+                hupai:    msg.yakus.map(h =>({ name: h[0], fanshu: h[1] })),
+                fenpei:   fenpei
+            };
+            paipu.log[paipu.log.length - 1].push({ hule: hule });
+        }
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
     });
