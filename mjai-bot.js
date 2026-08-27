@@ -31,7 +31,7 @@ const sock = net.connect(port, host, ()=>{
 
     let id, paipu = {},
         board = new Majiang.Board(),
-        lunban, lizhi, all_fulou = [[],[],[],[]];
+        lunban, lizhi, all_fulou;
 
     sock.on('data', (data)=>{
         let msg = JSON.parse(data.toString('utf-8'));
@@ -79,6 +79,7 @@ const sock = net.connect(port, host, ()=>{
                         = msg.tehais[id].map(p => pai(p)).join('');
             }
             lizhi = false;
+            all_fulou = [[],[],[],[]];
             paipu.log.push([ { qipai: qipai } ]);
             board.qipai(qipai);
         }
