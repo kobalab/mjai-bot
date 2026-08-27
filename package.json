@@ -1,0 +1,21 @@
+{
+  "name": "@kobalab/mjai-bot",
+  "version": "0.0.1",
+  "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kobalab/mjai-bot.git"
+  },
+  "keywords": [],
+  "author": "Satoshi Kobayashi (https://github.com/kobalab)",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kobalab/mjai-bot/issues"
+  },
+  "homepage": "https://github.com/kobalab/mjai-bot#readme"
+}
