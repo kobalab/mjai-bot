@@ -143,6 +143,7 @@ const sock = net.connect(port, host, ()=>{
                 hule.shoupai += ',' + all_fulou[hule.l].join(',');
             }
             paipu.log[paipu.log.length - 1].push({ hule: hule });
+            board.hule(hule);
 
             paipu.defen = msg.scores.concat();
         }
