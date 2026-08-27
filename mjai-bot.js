@@ -148,6 +148,27 @@ const sock = net.connect(port, host, ()=>{
             paipu.defen = msg.scores.concat();
         }
         else if (msg.type == 'ryukyoku') {
+            let fenpei = [];
+            for (let id = 0; id < 4; id++) {
+                fenpei[lunban[id]] = msg.deltas[id];
+            }
+            let pingju = {
+                name:    msg.reason,
+                shoupai: ['','','',''],
+                fenpei:  fenpei
+            };
+            for (let id = 0; id < 4; id++) {
+                let l = lunban[id];
+                pingju.shoupai[l] = msg.tehais[id]
+                                        .map(p => p == '?' ? '_' : pai(p))
+                                        .join('');
+                if (all_fulou[l].length) {
+                    pingju.shoupai[l] += ',' + all_fulou[l].join(',');
+                }
+            }
+            paipu.log[paipu.log.length - 1].push({ pingju: pingju });
+            board.pingju(pingju);
+
             paipu.defen = msg.scores.concat();
         }
         else if (msg.type == 'end_game') {
