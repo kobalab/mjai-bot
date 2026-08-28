@@ -27,6 +27,27 @@ function mianzi(l, t, ...p) {
                 p.map(p => pai(p)).join('').replace(/(?<=\d)[mpsz]/g,'') + d);
 }
 
+function make_rank(paipu) {
+
+    let paiming = [];
+    let defen = paipu.defen;
+    for (let i = 0; i < 4; i++) {
+        let id = (paipu.qijia + i) % 4;
+        for (let j = 0; j < 4; j++) {
+            if (j == paiming.length || defen[id] > defen[paiming[j]]) {
+                paiming.splice(j, 0, id);
+                break;
+            }
+        }
+    }
+
+    let rank = [0,0,0,0];
+    for (let i = 0; i < 4; i++) {
+        rank[paiming[i]] = i + 1;
+    }
+    return rank;
+}
+
 let exit;
 
 const sock = net.connect(port, host, ()=>{
@@ -207,6 +228,7 @@ const sock = net.connect(port, host, ()=>{
         }
         else if (msg.type == 'end_game') {
             paipu.defen = msg.scores.concat();
+            paipu.rank  = make_rank(paipu);
         }
         else if (msg.type == 'end_kyoku') {}
         else {
