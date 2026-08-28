@@ -230,11 +230,10 @@ const sock = net.connect(port, host, ()=>{
             paipu.defen = msg.scores.concat();
             paipu.rank  = make_rank(paipu);
         }
-        else if (msg.type == 'end_kyoku') {}
-        else {
+        else if (msg.type == 'error') {
             if (outfile) fs.writeFileSync(outfile, JSON.stringify(paipu),
                                             'utf-8');
-            throw new Error(msg.type);
+            throw msg.message;
         }
 
         if (msg.possible_actions && msg.possible_actions.length)
