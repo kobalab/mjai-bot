@@ -206,6 +206,12 @@ const sock = net.connect(port, host, ()=>{
         else if (msg.type == 'end_game') {
             paipu.defen = msg.scores.concat();
         }
+        else if (msg.type == 'end_kyoku') {}
+        else {
+            if (outfile) fs.writeFileSync(outfile, JSON.stringify(paipu),
+                                            'utf-8');
+            throw new Error(msg.type);
+        }
 
         if (msg.possible_actions && msg.possible_actions.length)
                                             reply = msg.possible_actions[0];
