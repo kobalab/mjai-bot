@@ -180,9 +180,8 @@ const sock = net.connect(port, host, ()=>{
             };
             for (let id = 0; id < 4; id++) {
                 let l = lunban[id];
-                pingju.shoupai[l] = msg.tehais[id]
-                                        .map(p => p == '?' ? '_' : pai(p))
-                                        .join('');
+                pingju.shoupai[l] = msg.tehais[id].map(p => pai(p)).join('');
+                if (! pingju.shoupai[l]) continue;
                 if (all_fulou[l].length) {
                     pingju.shoupai[l] += ',' + all_fulou[l].join(',');
                 }
