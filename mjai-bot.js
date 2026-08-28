@@ -113,6 +113,18 @@ const sock = net.connect(port, host, ()=>{
             paipu.log[paipu.log.length - 1].push({ fulou: fulou });
             board.fulou(fulou);
             all_fulou[fulou.l].push(fulou.m);
+            if (msg.actor == id && msg.type != 'daiminkan') {
+                reply = {
+                    type: 'dahai',
+                    actor: id,
+                    pai: '',
+                    tsumogiri: false
+                };
+                let p = board.shoupai[lunban[id]].get_dapai().pop();
+                let s = p[0], n = +p[1]||5;
+                reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
+                                     : n + s + (+p[1] ? '' : 'r');
+            }
         }
         else if (msg.type == 'ankan') {
             let gang = { l: lunban[msg.actor],
@@ -194,6 +206,9 @@ const sock = net.connect(port, host, ()=>{
         else if (msg.type == 'end_game') {
             paipu.defen = msg.scores.concat();
         }
+
+        if (msg.possible_actions && msg.possible_actions.length)
+                                            reply = msg.possible_actions[0];
         console.log('->', reply);
         sock.write(JSON.stringify(reply) + '\n');
     });
