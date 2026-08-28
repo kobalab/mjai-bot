@@ -27,6 +27,8 @@ function mianzi(l, t, ...p) {
                 p.map(p => pai(p)).join('').replace(/(?<=\d)[mpsz]/g,'') + d);
 }
 
+let exit;
+
 const sock = net.connect(port, host, ()=>{
 
     let id, paipu = {},
@@ -220,5 +222,6 @@ const sock = net.connect(port, host, ()=>{
     });
     sock.on('close', ()=>{
         if (outfile) fs.writeFileSync(outfile, JSON.stringify(paipu), 'utf-8');
+        if (exit) process.exit(exit);
     });
 });
