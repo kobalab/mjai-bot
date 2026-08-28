@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/mjai-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
   "private": true,
   "scripts": {
