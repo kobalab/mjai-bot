@@ -84,6 +84,23 @@ const sock = net.connect(port, host, ()=>{
                                      : n + s + (+p[1] ? '' : 'r');
             }
         }
+        else if (msg.type == 'reach') {
+            if (msg.actor == id) {
+                reply = {
+                    type: 'dahai',
+                    actor: id,
+                    pai: '',
+                    tsumogiri: true
+                };
+                let p = Majiang.Game.allow_lizhi(
+                                rule, board.shoupai[board.menfeng(id)]).pop();
+                let s = p[0], n = +p[1]||5;
+                reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
+                                     : n + s + (+p[1] ? '' : 'r');
+                reply.tsumogiri = p[2] == '_';
+            }
+        }
+
         if (msg.possible_actions && msg.possible_actions.length)
                                             reply = msg.possible_actions[0];
 
