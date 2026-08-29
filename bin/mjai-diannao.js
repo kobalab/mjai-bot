@@ -38,6 +38,8 @@ const sock = net.connect(port, host, ()=>{
     const player  = new Player();
     const convmsg = converter(rule);
 
+    let next_reply;
+
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
         if (argv.verbose) console.log('<-', msg);
@@ -47,62 +49,48 @@ const sock = net.connect(port, host, ()=>{
         if (msg.type == 'hello') {
             reply = { type: 'join', name: '電脳麻将', room: room };
         }
+        else if (msg.type == 'reach' && next_reply) {
+            reply = next_reply;
+            next_reply = null;
+        }
         else if (msg.type == "error") {
             console.error(msg.message);
             process.exit(-1);
         }
+
+        let act = convmsg(msg);
+        if (act && act.kaigang) {
+            player.action(act);
+            if (argv.verbose) console.log('->', reply);
+            sock.write(JSON.stringify(reply) + '\n');
+        }
+        else if (act) {
+            player.action(act, (rep = {})=>{
+                if (rep.dapai) {
+                    let p = rep.dapai;
+                    reply = { type: 'dahai', actor: msg.actor,
+                              pai: '', tsumogiri: false };
+                    let s = p[0], n = +p[1]||5;
+                    reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
+                                         : n + s + (+p[1] ? '' : 'r');
+                    reply.tsumogiri = p[2] == '_';
+                    if (p.slice(-1) == '*') {
+                        next_reply = reply;
+                        reply = { type: 'reach', actor: msg.actor };
+                    }
+                }
+                else if (rep.hule) {
+                    reply = { type: 'hora', actor: player._id,
+                              target: msg.actor, pai: msg.pai };
+                }
+                if (argv.verbose) console.log('->', reply);
+                sock.write(JSON.stringify(reply) + '\n');
+            });
+        }
         else {
-            let act = convmsg(msg);
-            if (act) player.action(act);
+            if (argv.verbose) console.log('->', reply);
+            sock.write(JSON.stringify(reply) + '\n');
         }
-
-        if (msg.type == 'tsumo') {
-            if (msg.actor == player._id) {
-                reply = {
-                    type: 'dahai',
-                    actor: msg.actor,
-                    pai: msg.pai,
-                    tsumogiri: true
-                };
-            }
-        }
-        else if (msg.type == 'chi' || msg.type == 'pon' ||
-                 msg.type ==  'daiminkan')
-        {
-            if (msg.actor == player._id && msg.type != 'daiminkan') {
-                reply = {
-                    type: 'dahai',
-                    actor: msg.actor,
-                    pai: '',
-                    tsumogiri: false
-                };
-                let p = player.shoupai.get_dapai().pop();
-                let s = p[0], n = +p[1]||5;
-                reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
-                                     : n + s + (+p[1] ? '' : 'r');
-            }
-        }
-        else if (msg.type == 'reach') {
-            if (msg.actor == player._id) {
-                reply = {
-                    type: 'dahai',
-                    actor: msg.actor,
-                    pai: '',
-                    tsumogiri: true
-                };
-                let p = Majiang.Game.allow_lizhi(rule, player.shoupai).pop();
-                let s = p[0], n = +p[1]||5;
-                reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
-                                     : n + s + (+p[1] ? '' : 'r');
-                reply.tsumogiri = p[2] == '_';
-            }
-        }
-
-        if (msg.possible_actions && msg.possible_actions.length)
-                                            reply = msg.possible_actions[0];
-
-        if (argv.verbose) console.log('->', reply);
-        sock.write(JSON.stringify(reply) + '\n');
     });
     sock.on('close', ()=>{
         if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
