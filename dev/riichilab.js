@@ -76,9 +76,6 @@ ws.on('open', ()=>{
         else {
             reply = convreply(msg);
         }
-
-        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
-                                        'utf-8');
     });
 
     ws.on('close', ()=>{
