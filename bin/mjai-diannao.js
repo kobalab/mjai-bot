@@ -30,30 +30,27 @@ const outfile = argv.output && path.resolve(argv.output);
 const rule = Majiang.rule();
 
 const converter = require('../lib/convmsg');
+const convreply = require('../lib/convreply')();
 
 const sock = net.connect(port, host, ()=>{
 
     const line = readline.createInterface(sock);
 
     const player  = new Player();
+    player.select_gang = ()=>{};
     const convmsg = converter(rule);
-
-    let next_reply;
 
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
         if (argv.verbose) console.log('<-', msg);
 
-        let reply = { type: 'none' };
-
         if (msg.type == 'hello') {
-            reply = { type: 'join', name: '電脳麻将', room: room };
+            let reply = { type: 'join', name: '電脳麻将', room: room };
+            if (argv.verbose) console.log('->', reply);
+            sock.write(JSON.stringify(reply) + '\n');
+            return;
         }
-        else if (msg.type == 'reach' && next_reply) {
-            reply = next_reply;
-            next_reply = null;
-        }
-        else if (msg.type == "error") {
+        if (msg.type == "error") {
             console.error(msg.message);
             process.exit(-1);
         }
@@ -61,33 +58,19 @@ const sock = net.connect(port, host, ()=>{
         let act = convmsg(msg);
         if (act && act.kaigang) {
             player.action(act);
+            let reply = convreply(msg);
             if (argv.verbose) console.log('->', reply);
             sock.write(JSON.stringify(reply) + '\n');
         }
         else if (act) {
             player.action(act, (rep = {})=>{
-                if (rep.dapai) {
-                    let p = rep.dapai;
-                    reply = { type: 'dahai', actor: msg.actor,
-                              pai: '', tsumogiri: false };
-                    let s = p[0], n = +p[1]||5;
-                    reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
-                                         : n + s + (+p[1] ? '' : 'r');
-                    reply.tsumogiri = p[2] == '_';
-                    if (p.slice(-1) == '*') {
-                        next_reply = reply;
-                        reply = { type: 'reach', actor: msg.actor };
-                    }
-                }
-                else if (rep.hule) {
-                    reply = { type: 'hora', actor: player._id,
-                              target: msg.actor, pai: msg.pai };
-                }
+                let reply = convreply(msg, player._id, rep);
                 if (argv.verbose) console.log('->', reply);
                 sock.write(JSON.stringify(reply) + '\n');
             });
         }
         else {
+            let reply = convreply(msg);
             if (argv.verbose) console.log('->', reply);
             sock.write(JSON.stringify(reply) + '\n');
         }
