@@ -51,6 +51,8 @@ const sock = net.connect(port, host, ()=>{
         }
         if (msg.type == "error") {
             console.error(msg.message);
+            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+                                            'utf-8');
             process.exit(-1);
         }
 
