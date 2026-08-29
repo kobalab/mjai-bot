@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/mjai-bot",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
   "private": true,
   "bin": {
@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/kobalab/mjai-bot#readme",
   "dependencies": {
+    "@kobalab/majiang-ai": "^1.2.0",
     "@kobalab/majiang-core": "^1.4.1",
+    "ws": "^8.21.3",
     "yargs": "^17.7.3"
   }
 }
