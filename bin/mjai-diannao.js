@@ -23,6 +23,8 @@ if (! host) {
     process.exit(-1);
 }
 
+const Player = require('@kobalab/majiang-ai');
+
 const outfile = argv.output && path.resolve(argv.output);
 
 const rule = Majiang.rule();
@@ -33,10 +35,8 @@ const sock = net.connect(port, host, ()=>{
 
     const line = readline.createInterface(sock);
 
-    let board = new Majiang.Board();
-    const convmsg = converter(rule, board);
-
-    let id;
+    const player  = new Player();
+    const convmsg = converter(rule);
 
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
@@ -52,17 +52,15 @@ const sock = net.connect(port, host, ()=>{
             process.exit(-1);
         }
         else {
-            let cm = convmsg(msg);
+            let act = convmsg(msg);
+            if (act) player.action(act);
         }
 
-        if (msg.type == 'start_game') {
-            id = msg.id;
-        }
-        else if (msg.type == 'tsumo') {
-            if (msg.actor == id) {
+        if (msg.type == 'tsumo') {
+            if (msg.actor == player._id) {
                 reply = {
                     type: 'dahai',
-                    actor: id,
+                    actor: msg.actor,
                     pai: msg.pai,
                     tsumogiri: true
                 };
@@ -71,29 +69,28 @@ const sock = net.connect(port, host, ()=>{
         else if (msg.type == 'chi' || msg.type == 'pon' ||
                  msg.type ==  'daiminkan')
         {
-            if (msg.actor == id && msg.type != 'daiminkan') {
+            if (msg.actor == player._id && msg.type != 'daiminkan') {
                 reply = {
                     type: 'dahai',
-                    actor: id,
+                    actor: msg.actor,
                     pai: '',
                     tsumogiri: false
                 };
-                let p = board.shoupai[board.menfeng(id)].get_dapai().pop();
+                let p = player.shoupai.get_dapai().pop();
                 let s = p[0], n = +p[1]||5;
                 reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
                                      : n + s + (+p[1] ? '' : 'r');
             }
         }
         else if (msg.type == 'reach') {
-            if (msg.actor == id) {
+            if (msg.actor == player._id) {
                 reply = {
                     type: 'dahai',
-                    actor: id,
+                    actor: msg.actor,
                     pai: '',
                     tsumogiri: true
                 };
-                let p = Majiang.Game.allow_lizhi(
-                                rule, board.shoupai[board.menfeng(id)]).pop();
+                let p = Majiang.Game.allow_lizhi(rule, player.shoupai).pop();
                 let s = p[0], n = +p[1]||5;
                 reply.pai = s == 'z' ? ['','E','S','W','N','P','F','C'][n]
                                      : n + s + (+p[1] ? '' : 'r');
