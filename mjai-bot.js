@@ -7,6 +7,8 @@ const path = require('path');
 
 const net = require('net');
 
+const readline = require('readline');
+
 const host = process.argv[3]   || 'localhost';
 const port = + process.argv[2] || 11600;
 
@@ -52,12 +54,14 @@ let exit;
 
 const sock = net.connect(port, host, ()=>{
 
+    const line = readline.createInterface(sock);
+
     let id, paipu = {},
         board = new Majiang.Board(),
         lunban, lizhi, all_fulou;
 
-    sock.on('data', (data)=>{
-        let msg = JSON.parse(data.toString('utf-8'));
+    line.on('line', (data)=>{
+        let msg = JSON.parse(data);
         console.log('<-', msg);
 
         let reply = { type: 'none' };
