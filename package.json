@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
   "private": true,
+  "bin": {
+    "mjai-diannao": "./bin/mjai-diannao.js"
+  },
   "scripts": {
     "start": "node bin/mjai-diannao.js"
   },
