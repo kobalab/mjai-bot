@@ -2,6 +2,9 @@
 
 "use strict";
 
+const Majiang = require('@kobalab/majiang-core');
+const Player  = require('@kobalab/majiang-ai');
+
 const fs   = require('fs');
 const path = require('path');
 
@@ -13,19 +16,73 @@ const argv = require('yargs')
     .option('verbose', { alias: 'v', boolean: true })
     .argv;
 
+const outfile = argv.output && path.resolve(argv.output);
+
 const token = fs.readFileSync(path.resolve('.riichilab'))
                                     .toString().replace(/\n$/,'');
+
+const rule = Majiang.rule();
+
+const converter = require('../lib/convmsg');
+const convreply = require('../lib/convreply')();
 
 const ws = new WebSocket('wss://game.riichi.dev/ws/validate', {
     headers: {
         Authorization: `Bearer ${token}`
     }
+}).on('error', (e)=>{
+    console.error((e.errors?.[0] ?? e).toString());
+    process.exit(-1);
 });
 
 ws.on('open', ()=>{
-    console.log('** connect');
+
+    const player  = new Player();
+    const convmsg = converter(rule);
+
+    let reply;
 
     ws.on('message', (data)=>{
-        console.log('** data:', JSON.parse(data.toString('utf-8')));
+        let msg = JSON.parse(data);
+        if (argv.verbose) console.log('<-', msg);
+
+        if (msg.type == "error") {
+            console.error(msg.message);
+            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+                                            'utf-8');
+            process.exit(-1);
+        }
+
+        if (msg.type == 'request_action') {
+            if (reply.type == 'reach') {
+                reply = convreply(msg);
+            }
+            reply.request_id = msg.request_id;
+            if (argv.verbose) console.log('->', reply);
+            ws.send(JSON.stringify(reply) + '\n');
+            return;
+        }
+
+        let act = convmsg(msg);
+        if (act && act.kaigang) {
+            player.action(act);
+            reply = convreply(msg);
+        }
+        else if (act) {
+            player.action(act, (rep = {})=>{
+                reply = convreply(msg, player._id, rep);
+            });
+        }
+        else {
+            reply = convreply(msg);
+        }
+
+        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+                                        'utf-8');
+    });
+
+    ws.on('close', ()=>{
+        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+                                        'utf-8');
     });
 });
