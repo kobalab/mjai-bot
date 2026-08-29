@@ -26,7 +26,7 @@ const rule = Majiang.rule();
 const converter = require('../lib/convmsg');
 const convreply = require('../lib/convreply')();
 
-const ws = new WebSocket('wss://game.riichi.dev/ws/validate', {
+const ws = new WebSocket('wss://game.riichi.dev/ws/ranked', {
     headers: {
         Authorization: `Bearer ${token}`
     }
