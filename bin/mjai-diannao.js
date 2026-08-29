@@ -39,14 +39,17 @@ const sock = net.connect(port, host, ()=>{
     const player  = new Player();
     const convmsg = converter(rule);
 
+    function send(reply) {
+        if (argv.verbose) console.log('->', reply);
+        sock.write(JSON.stringify(reply) + '\n');
+    }
+
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
         if (argv.verbose) console.log('<-', msg);
 
         if (msg.type == 'hello') {
-            let reply = { type: 'join', name: '電脳麻将', room: room };
-            if (argv.verbose) console.log('->', reply);
-            sock.write(JSON.stringify(reply) + '\n');
+            send({ type: 'join', name: '電脳麻将', room: room });
             return;
         }
         if (msg.type == "error") {
@@ -59,21 +62,15 @@ const sock = net.connect(port, host, ()=>{
         let act = convmsg(msg);
         if (act && act.kaigang) {
             player.action(act);
-            let reply = convreply(msg);
-            if (argv.verbose) console.log('->', reply);
-            sock.write(JSON.stringify(reply) + '\n');
+            send(convreply(msg));
         }
         else if (act) {
             player.action(act, (rep = {})=>{
-                let reply = convreply(msg, player._id, rep);
-                if (argv.verbose) console.log('->', reply);
-                sock.write(JSON.stringify(reply) + '\n');
+                send(convreply(msg, player._id, rep));
             });
         }
         else {
-            let reply = convreply(msg);
-            if (argv.verbose) console.log('->', reply);
-            sock.write(JSON.stringify(reply) + '\n');
+            send(convreply(msg));
         }
     });
     sock.on('close', ()=>{
