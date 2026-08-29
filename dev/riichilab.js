@@ -14,6 +14,7 @@ const argv = require('yargs')
     .usage('Usage: $0')
     .option('output',  { alias: 'o'                })
     .option('verbose', { alias: 'v', boolean: true })
+    .option('debug',   { alias: 'D', boolean: true })
     .argv;
 
 const outfile = argv.output && path.resolve(argv.output);
@@ -21,12 +22,15 @@ const outfile = argv.output && path.resolve(argv.output);
 const token = fs.readFileSync(path.resolve('.riichilab'))
                                     .toString().replace(/\n$/,'');
 
+const url = 'wss://game.riichi.dev/ws/'
+                + (argv.debug ? 'validate' : 'ranked');
+
 const rule = Majiang.rule();
 
 const converter = require('../lib/convmsg');
 const convreply = require('../lib/convreply')();
 
-const ws = new WebSocket('wss://game.riichi.dev/ws/ranked', {
+const ws = new WebSocket(url, {
     headers: {
         Authorization: `Bearer ${token}`
     }
