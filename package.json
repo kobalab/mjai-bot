@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/kobalab/mjai-bot#readme",
   "dependencies": {
-    "@kobalab/majiang-core": "^1.4.1"
+    "@kobalab/majiang-core": "^1.4.1",
+    "yargs": "^17.7.3"
   }
 }
