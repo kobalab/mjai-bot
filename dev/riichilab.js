@@ -58,12 +58,12 @@ ws.on('open', ()=>{
         }
 
         if (msg.type == 'request_action') {
-            if (reply.type == 'reach') {
-                reply = convreply(msg);
-            }
             reply.request_id = msg.request_id;
             if (argv.verbose) console.log('->', reply);
             ws.send(JSON.stringify(reply) + '\n');
+            return;
+        }
+        else if (msg.type == 'action_ack') {
             return;
         }
 
