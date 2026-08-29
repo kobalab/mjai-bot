@@ -37,7 +37,6 @@ const sock = net.connect(port, host, ()=>{
     const line = readline.createInterface(sock);
 
     const player  = new Player();
-    player.select_gang = ()=>{};
     const convmsg = converter(rule);
 
     line.on('line', (data)=>{
