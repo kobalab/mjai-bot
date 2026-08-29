@@ -23,6 +23,7 @@
   "homepage": "https://github.com/kobalab/mjai-bot#readme",
   "dependencies": {
     "@kobalab/majiang-core": "^1.4.1",
+    "ws": "^8.21.3",
     "yargs": "^17.7.3"
   }
 }
