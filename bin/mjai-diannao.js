@@ -12,6 +12,7 @@ const readline = require('readline');
 const argv = require('yargs')
     .usage('Usage: $0 mjsonp://<host>:<port>/<room>')
     .option('output',  { alias: 'o'                })
+    .option('legacy',  { alias: 'l', type: 'string'})
     .option('verbose', { alias: 'v', boolean: true })
     .demandCommand(1)
     .argv;
@@ -23,7 +24,8 @@ if (! host) {
     process.exit(-1);
 }
 
-const Player = require('@kobalab/majiang-ai');
+const Player = argv.legacy ? require('@kobalab/majiang-ai/legacy')(argv.legacy)
+                           : require('@kobalab/majiang-ai');
 
 const outfile = argv.output && path.resolve(argv.output);
 
@@ -31,6 +33,8 @@ const rule = Majiang.rule();
 
 const converter = require('../lib/convmsg');
 const convreply = require('../lib/convreply')();
+
+const name = argv.legacy ? `電脳麻将[${argv.legacy}]` : '電脳麻将'
 
 const sock = net.connect(port, host, ()=>{
 
@@ -49,7 +53,7 @@ const sock = net.connect(port, host, ()=>{
         if (argv.verbose) console.log('<-', msg);
 
         if (msg.type == 'hello') {
-            send({ type: 'join', name: '電脳麻将', room: room });
+            send({ type: 'join', name: name, room: room });
             return;
         }
         if (msg.type == "error") {
