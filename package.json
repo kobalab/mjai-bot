@@ -15,7 +15,11 @@
     "type": "git",
     "url": "git+https://github.com/kobalab/mjai-bot.git"
   },
-  "keywords": [],
+  "keywords": [
+    "麻雀",
+    "Mjai",
+    "電脳麻将"
+  ],
   "author": "Satoshi Kobayashi (https://github.com/kobalab)",
   "license": "MIT",
   "type": "commonjs",
