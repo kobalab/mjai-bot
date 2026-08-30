@@ -22,7 +22,7 @@
 指定されたファイルに [牌譜](https://github.com/kobalab/majiang-core/wiki/%E7%89%8C%E8%AD%9C) を出力します
 
 #### --legacy, -l
-対局者の [思考アルゴリズム](https://github.com/kobalab/majiang-ai/blob/master/legacy/README.md) を指定する(デフォルトは最新アルゴリズム)
+対局者の [思考アルゴリズム](https://github.com/kobalab/majiang-ai/blob/master/legacy/README.md) を指定します
 
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します
