@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+cd `dirname $0`
+
 [ $# -gt 0 ] || { echo "Usage: $0 count params..."; exit 1; }
 
 trap '' HUP

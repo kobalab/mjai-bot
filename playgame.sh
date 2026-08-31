@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+cd `dirname $0`
+
 for i in $(seq $1 -1 1)
 do
     test $2 && logfile=$2 || logfile=./log/`date '+%Y%m%d-%H%M%S'`.json
