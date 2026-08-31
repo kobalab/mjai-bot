@@ -1,8 +1,10 @@
 {
   "name": "@kobalab/mjai-bot",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "mjai-diannao": "./bin/mjai-diannao.js"
   },
@@ -13,8 +15,12 @@
     "type": "git",
     "url": "git+https://github.com/kobalab/mjai-bot.git"
   },
-  "keywords": [],
-  "author": "Satoshi Kobayashi (https://github.com/kobalab)",
+  "keywords": [
+    "麻雀",
+    "Mjai",
+    "電脳麻将"
+  ],
+  "author": "Satoshi Kobayashi",
   "license": "MIT",
   "type": "commonjs",
   "bugs": {
@@ -24,7 +30,9 @@
   "dependencies": {
     "@kobalab/majiang-ai": "^1.2.0",
     "@kobalab/majiang-core": "^1.4.1",
-    "ws": "^8.21.3",
     "yargs": "^17.7.3"
+  },
+  "devDependencies": {
+    "ws": "^8.21.3"
   }
 }
