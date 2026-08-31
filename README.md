@@ -32,6 +32,9 @@ $ npm i -g @kobalab/mjai-bot
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します
 
+## 制限事項
+現在(2026年9月) gem でインストールできる mjai にはバグがあり暗槓後のリーチを不正動作と判定してしまいますが、ボットはそれを避ける動作はしません。
+
 ## ライセンス
 [MIT](https://github.com/kobalab/mjai-bot/blob/master/LICENSE)
 
