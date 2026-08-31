@@ -12,6 +12,7 @@ const WebSocket = require('ws');
 
 const argv = require('yargs')
     .usage('Usage: $0')
+    .option('token',   { alias: 't', type: 'string', demandOption: true })
     .option('output',  { alias: 'o'                })
     .option('verbose', { alias: 'v', boolean: true })
     .option('debug',   { alias: 'D', boolean: true })
@@ -19,7 +20,7 @@ const argv = require('yargs')
 
 const outfile = argv.output && path.resolve(argv.output);
 
-const token = fs.readFileSync(path.resolve('.riichilab'))
+const token = fs.readFileSync(path.resolve(argv.token))
                                     .toString().replace(/\n$/,'');
 
 const url = 'wss://game.riichi.dev/ws/'
