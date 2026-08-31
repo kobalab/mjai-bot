@@ -5,6 +5,11 @@
 [@kobalab/majiang-ai](https://www.npmjs.com/package/@kobalab/majiang-ai) を組み込んだ麻雀ボットです。
 **mjai-diannao** の接続先URL表記は Mjai の標準にしたがっていますので、Mjaiサーバーとともに起動するボットとして指定可能です。
 
+## インストール
+```bash
+$ npm i -g @kobalab/mjai-bot
+```
+
 ## 使用方法
 
 ### mjai-diannao mjsonp://*host*:*port*/*room*
