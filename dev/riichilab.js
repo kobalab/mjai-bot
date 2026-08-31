@@ -3,7 +3,6 @@
 "use strict";
 
 const Majiang = require('@kobalab/majiang-core');
-const Player  = require('@kobalab/majiang-ai');
 
 const fs   = require('fs');
 const path = require('path');
@@ -14,6 +13,7 @@ const argv = require('yargs')
     .usage('Usage: $0')
     .option('token',   { alias: 't', type: 'string', demandOption: true })
     .option('output',  { alias: 'o'                })
+    .option('legacy',  { alias: 'l', type: 'string'})
     .option('verbose', { alias: 'v', boolean: true })
     .option('debug',   { alias: 'D', boolean: true })
     .argv;
@@ -22,6 +22,9 @@ const outfile = argv.output && path.resolve(argv.output);
 
 const token = fs.readFileSync(path.resolve(argv.token))
                                     .toString().replace(/\n$/,'');
+
+const Player = argv.legacy ? require('@kobalab/majiang-ai/legacy')(argv.legacy)
+                           : require('@kobalab/majiang-ai');
 
 const url = 'wss://game.riichi.dev/ws/'
                 + (argv.debug ? 'validate' : 'ranked');
