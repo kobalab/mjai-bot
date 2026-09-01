@@ -17,14 +17,12 @@ then
     do
         node dev/riichilab.js "$@"
         [ $stop -eq 1 ] && exit
-        sleep 60
+        sleep 15
     done
 else
     while [ $n -gt 0 ] && [ $stop -eq 0 ]
     do
         node dev/riichilab.js "$@"
-        [ $stop -eq 1 ] && exit
         n=$((n - 1))
-        [ $n -gt 0 ] && sleep 60
     done
 fi
