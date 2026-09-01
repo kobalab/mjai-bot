@@ -88,7 +88,8 @@ ws.on('open', ()=>{
         if (msg.type == 'end_game') {
             let paipu = convmsg();
             let rank  = paipu.rank[player._id];
-            let defen = `${paipu.defen[player._id]}`.replace(/(\d{3})$/,',$1');
+            let defen = `${paipu.defen[player._id]}`
+                                    .replace(/(\d)(\d{3})$/,'$1,$2');
             console.log(`#${rank}: ${defen}`);
         }
     });
