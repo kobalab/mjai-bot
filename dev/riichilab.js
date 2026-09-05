@@ -70,6 +70,9 @@ ws.on('open', ()=>{
         else if (msg.type == 'action_ack') {
             return;
         }
+        if (msg.type == 'start_kyoku') {
+            if (player.model.qijia == null) player.model.qijia = msg.oya;
+        }
 
         let act = convmsg(msg);
         if (act && act.kaigang) {
