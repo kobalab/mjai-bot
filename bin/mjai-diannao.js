@@ -62,6 +62,9 @@ const sock = net.connect(port, host, ()=>{
                                             'utf-8');
             process.exit(-1);
         }
+        if (msg.type == 'start_kyoku') {
+            if (player.model.qijia == null) player.model.qijia = msg.oya;
+        }
 
         let act = convmsg(msg);
         if (act && act.kaigang) {
