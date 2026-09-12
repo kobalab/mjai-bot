@@ -35,8 +35,6 @@ const sock = net.connect(port, host, ()=>{
 
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
-        if (argv.verbose) console.log('<-', util.inspect(msg,
-                                            { depth: null, colors: true }));
 
         if (msg.type == 'hello') {
             let rep = { type: 'join', name: 'Akagi', room: room };
@@ -56,6 +54,8 @@ const sock = net.connect(port, host, ()=>{
             process.exit(-1);
         }
 
+        if (argv.verbose) console.log('<-', util.inspect(msg,
+                                            { depth: null, colors: true }));
         akagi.stdin.write(JSON.stringify([ msg ]) + '\n');
 
         if (msg.scores) scores = msg.scores;
