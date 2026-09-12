@@ -75,6 +75,7 @@ const sock = net.connect(port, host, ()=>{
         }
         else if (rep.type == 'ryukyoku') {
             rep.actor = id;
+            rep.reason = 'kyushukyuhai';
         }
 
         sock.write(JSON.stringify(rep) + '\n');
