@@ -6,7 +6,8 @@
     "access": "public"
   },
   "bin": {
-    "mjai-diannao": "./bin/mjai-diannao.js"
+    "mjai-diannao": "./bin/mjai-diannao.js",
+    "akagi-wrapper": "./bin/akagi-wrapper.js"
   },
   "scripts": {
     "start": "node bin/mjai-diannao.js"
