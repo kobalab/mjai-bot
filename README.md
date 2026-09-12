@@ -4,6 +4,7 @@
 
 [@kobalab/majiang-ai](https://www.npmjs.com/package/@kobalab/majiang-ai) を組み込んだ麻雀ボットです。
 **mjai-diannao** の接続先URL表記は Mjai の標準にしたがっていますので、Mjaiサーバーとともに起動するボットとして指定可能です。
+**akagi-wrapper** は [Akagi](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパーです。
 
 ## インストール
 ```bash
@@ -28,6 +29,26 @@ $ npm i -g @kobalab/mjai-bot
 
 #### --legacy, -l
 対局者の [思考アルゴリズム](https://github.com/kobalab/majiang-ai/blob/master/legacy/README.md) を指定します
+
+#### --verbose, -v
+Mjaiプロトコルの通信を表示します
+
+### akagi-wrapper mjsonp://*host*:*port*/*room* *akagi-dir*
+
+[Akagi](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパー。
+ボットは `uv run python bot.py` で起動します。
+
+#### host
+接続するMjaiサーバーのホスト名あるいはIPアドレスを指定します
+
+#### port
+接続するMjaiサーバーのポート番号を指定します
+
+#### room
+接続するMjaiサーバーのルーム名を指定します
+
+#### akagi-dir
+Akagiのリポジトリを展開したディレクトリを指定します。
 
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します
