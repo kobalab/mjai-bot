@@ -15,6 +15,8 @@ $ npm i -g @kobalab/mjai-bot
 
 ### mjai-diannao mjsonp://*host*:*port*/*room*
 
+Mjaiサーバーに接続可能な [@kobalab/majiang-ai](https://www.npmjs.com/package/@kobalab/majiang-ai) を組み込んだ麻雀ボット。
+
 #### host
 接続するMjaiサーバーのホスト名あるいはIPアドレスを指定します
 
