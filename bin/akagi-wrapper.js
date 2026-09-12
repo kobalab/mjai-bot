@@ -66,8 +66,6 @@ const sock = net.connect(port, host, ()=>{
 
     stdin.on('line', (data)=>{
         let rep = JSON.parse(data);
-        if (argv.verbose) console.log('->', util.inspect(rep,
-                                            { depth: null, colors: true }));
 
         if (rep.type == 'hora') {
             delete rep.meta;
@@ -78,6 +76,8 @@ const sock = net.connect(port, host, ()=>{
             rep.reason = 'kyushukyuhai';
         }
 
+        if (argv.verbose) console.log('->', util.inspect(rep,
+                                            { depth: null, colors: true }));
         sock.write(JSON.stringify(rep) + '\n');
     });
 
