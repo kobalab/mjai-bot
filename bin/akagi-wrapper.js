@@ -68,13 +68,13 @@ const sock = net.connect(port, host, ()=>{
         let rep = JSON.parse(data);
 
         if (rep.type == 'hora') {
-            delete rep.meta;
             rep.pai = pai;
         }
         else if (rep.type == 'ryukyoku') {
             rep.actor = id;
             rep.reason = 'kyushukyuhai';
         }
+        delete rep.meta;
 
         if (argv.verbose) console.log('->', util.inspect(rep,
                                             { depth: null, colors: true }));
