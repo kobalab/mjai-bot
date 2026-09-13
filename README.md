@@ -50,7 +50,9 @@ Mjaiプロトコルの通信を表示します
 接続するMjaiサーバーのルーム名を指定します
 
 #### akagi-dir
-Akagiのリポジトリを展開したディレクトリを指定します。
+[Akagi-MjaiBot-Mortal](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) を展開したディレクトリを指定します。<br>
+**注意:** Akagi-MjaiBot-Mortal に含まれる `mortal.pth` は動作確認用のモデルです(強くありません)。
+実戦向けの強いモデルは別途入手する必要があります。
 
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します
