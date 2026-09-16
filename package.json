@@ -7,7 +7,8 @@
   },
   "bin": {
     "mjai-diannao": "./bin/mjai-diannao.js",
-    "akagi-wrapper": "./bin/akagi-wrapper.js"
+    "akagi-wrapper": "./bin/akagi-wrapper.js",
+    "mortal-wrapper": "./bin/mortal-wrapper.js"
   },
   "scripts": {
     "start": "node bin/mjai-diannao.js"
