@@ -62,28 +62,6 @@ Mjaiプロトコルの通信を表示します
 **注意:** Akagi-MjaiBot-Mortal に含まれる `mortal.pth` は動作確認用のモデルです(強くありません)。
 実戦向けの強いモデルは別途入手する必要があります。
 
-### akagi-wrapper mjsonp://*host*:*port*/*room* *akagi-dir*
-
-[Akagi](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパー。
-ボットは `uv run python bot.py` で起動します。
-
-#### host
-接続するMjaiサーバーのホスト名あるいはIPアドレスを指定します
-
-#### port
-接続するMjaiサーバーのポート番号を指定します
-
-#### room
-接続するMjaiサーバーのルーム名を指定します
-
-#### akagi-dir
-[Akagi-MjaiBot-Mortal](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) を展開したディレクトリを指定します。<br>
-**注意:** Akagi-MjaiBot-Mortal に含まれる `mortal.pth` は動作確認用のモデルです(強くありません)。
-実戦向けの強いモデルは別途入手する必要があります。
-
-#### --verbose, -v
-Mjaiプロトコルの通信を表示します
-
 ## 制限事項
 現在(2026年9月) gem でインストールできる mjai にはバグがあり暗槓後のリーチを不正動作と判定してしまいますが、ボットはそれを避ける動作はしません。
 
