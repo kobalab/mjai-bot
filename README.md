@@ -35,6 +35,33 @@ Mjaiサーバーに接続可能な [@kobalab/majiang-ai](https://www.npmjs.com/p
 #### --verbose, -v
 Mjaiプロトコルの通信を表示します
 
+### mortal-wrapper mjsonp://*host*:*port*/*room* *mortal-dir*
+
+[Mortal](https://github.com/Equim-chan/Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパー。
+ボットは `uv run python mortal.py` で起動します。
+
+#### host
+接続するMjaiサーバーのホスト名あるいはIPアドレスを指定します
+
+#### port
+接続するMjaiサーバーのポート番号を指定します
+
+#### room
+接続するMjaiサーバーのルーム名を指定します
+
+#### mortal-dir
+MortalのGitHubリポジトリを展開したディレクトリを指定します。
+
+#### --verbose, -v
+Mjaiプロトコルの通信を表示します
+
+#### --akagi
+[Akagi-MjaiBot-Mortal](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) のボットを使用します。
+*mortal-dir* には Akagi-MjaiBot-Mortal のGitHubリポジトリを展開したディレクトリを指定して下さい。
+ボットは `uv run python bot.py` で起動します。<br>
+**注意:** Akagi-MjaiBot-Mortal に含まれる `mortal.pth` は動作確認用のモデルです(強くありません)。
+実戦向けの強いモデルは別途入手する必要があります。
+
 ### akagi-wrapper mjsonp://*host*:*port*/*room* *akagi-dir*
 
 [Akagi](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパー。
