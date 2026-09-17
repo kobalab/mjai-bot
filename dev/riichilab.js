@@ -6,6 +6,7 @@ const Majiang = require('@kobalab/majiang-core');
 
 const fs   = require('fs');
 const path = require('path');
+const util = require('util');
 
 const WebSocket = require('ws');
 
@@ -52,7 +53,8 @@ ws.on('open', ()=>{
 
     ws.on('message', (data)=>{
         let msg = JSON.parse(data);
-        if (argv.verbose) console.log('<-', msg);
+        if (argv.verbose) console.log('<-', util.inspect(msg,
+                                                { depth: null, colors: true }));
 
         if (msg.type == "error") {
             console.error(msg.message);
@@ -63,7 +65,8 @@ ws.on('open', ()=>{
 
         if (msg.type == 'request_action') {
             reply.request_id = msg.request_id;
-            if (argv.verbose) console.log('->', reply);
+            if (argv.verbose) console.log('->', util.inspect(reply,
+                                                { depth: null, colors: true }));
             ws.send(JSON.stringify(reply) + '\n');
             return;
         }

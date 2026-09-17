@@ -1,12 +1,13 @@
 {
   "name": "@kobalab/mjai-bot",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
   "publishConfig": {
     "access": "public"
   },
   "bin": {
-    "mjai-diannao": "./bin/mjai-diannao.js"
+    "mjai-diannao": "./bin/mjai-diannao.js",
+    "mortal-wrapper": "./bin/mortal-wrapper.js"
   },
   "scripts": {
     "start": "node bin/mjai-diannao.js"

@@ -8,6 +8,7 @@ const fs       = require('fs');
 const path     = require('path');
 const net      = require('net');
 const readline = require('readline');
+const util     = require('util');
 
 const argv = require('yargs')
     .usage('Usage: $0 mjsonp://<host>:<port>/<room>')
@@ -44,13 +45,17 @@ const sock = net.connect(port, host, ()=>{
     const convmsg = converter(rule);
 
     function send(reply) {
-        if (argv.verbose) console.log('->', reply);
+        if (argv.verbose) console.log('->', util.inspect(reply,
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
         sock.write(JSON.stringify(reply) + '\n');
     }
 
     line.on('line', (data)=>{
         let msg = JSON.parse(data);
-        if (argv.verbose) console.log('<-', msg);
+        if (argv.verbose) console.log('<-', util.inspect(msg,
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
 
         if (msg.type == 'hello') {
             send({ type: 'join', name: name, room: room });
