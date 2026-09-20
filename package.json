@@ -10,7 +10,8 @@
     "mortal-wrapper": "./bin/mortal-wrapper.js"
   },
   "scripts": {
-    "test": "mocha -u tdd"
+    "test": "mocha -u tdd",
+    "test:cover": "nyc -r lcov -r text npm test"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "mocha": "^12.0.2",
+    "nyc": "^18.0.0",
     "ws": "^8.21.3"
   }
 }
