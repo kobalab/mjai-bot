@@ -10,7 +10,7 @@
     "mortal-wrapper": "./bin/mortal-wrapper.js"
   },
   "scripts": {
-    "start": "node bin/mjai-diannao.js"
+    "test": "mocha -u tdd"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "yargs": "^17.7.3"
   },
   "devDependencies": {
+    "mocha": "^12.0.2",
     "ws": "^8.21.3"
   }
 }
