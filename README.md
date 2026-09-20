@@ -4,7 +4,7 @@
 
 [@kobalab/majiang-ai](https://www.npmjs.com/package/@kobalab/majiang-ai) を組み込んだ麻雀ボットです。
 **mjai-diannao** の接続先URL表記は Mjai の標準にしたがっていますので、Mjaiサーバーとともに起動するボットとして指定可能です。
-**akagi-wrapper** は [Akagi](https://github.com/shinkuan/Akagi-MjaiBot-Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパーです。
+**mortal-wrapper** は [Mortal](https://github.com/Equim-chan/Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパーです。
 
 ## インストール
 ```bash
