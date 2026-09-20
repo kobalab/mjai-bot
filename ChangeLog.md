@@ -1,3 +1,7 @@
+### v1.1.1 / 2026-09-20
+
+  - READMEの誤記を修正: Akagi → Mortal
+
 ## v1.1.0 / 2026-09-17
 
   - mortal-wrapper を追加
