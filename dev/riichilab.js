@@ -32,8 +32,7 @@ const url = 'wss://game.riichi.dev/ws/'
 
 const rule = Majiang.rule();
 
-const converter = require('../lib/convmsg');
-const convreply = require('../lib/convreply')();
+const convert = require('../lib/convert');
 
 const ws = new WebSocket(url, {
     headers: {
@@ -47,52 +46,53 @@ const ws = new WebSocket(url, {
 ws.on('open', ()=>{
 
     const player  = new Player();
-    const convmsg = converter(rule);
+    const convreq = convert.convreq(rule);
+    const convres = convert.convres();
 
-    let reply;
+    let res;
 
     ws.on('message', (data)=>{
-        let msg = JSON.parse(data);
-        if (argv.verbose) console.log('<-', util.inspect(msg,
+        let req = JSON.parse(data);
+        if (argv.verbose) console.log('<-', util.inspect(req,
                                                 { depth: null, colors: true }));
 
-        if (msg.type == "error") {
-            console.error(msg.message);
-            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+        if (req.type == "error") {
+            console.error(req.message);
+            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convreq()),
                                             'utf-8');
             process.exit(-1);
         }
 
-        if (msg.type == 'request_action') {
-            reply.request_id = msg.request_id;
-            if (argv.verbose) console.log('->', util.inspect(reply,
+        if (req.type == 'request_action') {
+            res.request_id = req.request_id;
+            if (argv.verbose) console.log('->', util.inspect(res,
                                                 { depth: null, colors: true }));
-            ws.send(JSON.stringify(reply) + '\n');
+            ws.send(JSON.stringify(res) + '\n');
             return;
         }
-        else if (msg.type == 'action_ack') {
+        else if (req.type == 'action_ack') {
             return;
         }
-        if (msg.type == 'start_kyoku') {
-            if (player.model.qijia == null) player.model.qijia = msg.oya;
+        if (req.type == 'start_kyoku') {
+            if (player.model.qijia == null) player.model.qijia = req.oya;
         }
 
-        let act = convmsg(msg);
-        if (act && act.kaigang) {
-            player.action(act);
-            reply = convreply(msg);
+        let msg = convreq(req);
+        if (msg && msg.kaigang) {
+            player.action(msg);
+            res = convres(req);
         }
-        else if (act) {
-            player.action(act, (rep = {})=>{
-                reply = convreply(msg, player._id, rep);
+        else if (msg) {
+            player.action(msg, (rep = {})=>{
+                res = convres(req, rep);
             });
         }
         else {
-            reply = convreply(msg);
+            res = convres(req);
         }
 
-        if (msg.type == 'end_game') {
-            let paipu = convmsg();
+        if (req.type == 'end_game') {
+            let paipu = convreq();
             let rank  = paipu.rank[player._id];
             let defen = `${paipu.defen[player._id]}`
                                     .replace(/(\d)(\d{3})$/,'$1,$2');
@@ -101,7 +101,7 @@ ws.on('open', ()=>{
     });
 
     ws.on('close', ()=>{
-        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convreq()),
                                         'utf-8');
     });
 });
