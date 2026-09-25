@@ -573,26 +573,27 @@ suite('convert', ()=>{
         test('zimo (マスクなし)', ()=>{
             const convmsg = init();
             assert.deepEqual(convmsg({ zimo: { l: 0, p: 'm2' } }),
-                             { type:'tsumo', actor: 2, pai:'2m' });
+                             { type:'tsumo', actor: 2, pai:'2m',
+                               possible_actions:[] });
         });
 
         test('dapai (手出し)', ()=>{
             const convmsg = init();
-            assert.deepEqual(convmsg({ dapai: { l: 2, p: 's3' } }),
-                             { type:'dahai', actor: 0, pai:'3s',
+            assert.deepEqual(convmsg({ dapai: { l: 0, p: 's0' } }),
+                             { type:'dahai', actor: 2, pai:'5sr',
                                tsumogiri: false });
         });
         test('dapai (ツモ切り)', ()=>{
             const convmsg = init();
             assert.deepEqual(convmsg({ dapai: { l: 2, p: 's3_' } }),
                              { type:'dahai', actor: 0, pai:'3s',
-                               tsumogiri: true });
+                               tsumogiri: true, possible_actions:[] });
         });
         test('dapai (リーチ)', ()=>{
             const convmsg = init();
             assert.deepEqual(convmsg({ dapai: { l: 2, p: 's3*' } }),
                              { type:'dahai', actor: 0, pai:'3s',
-                               tsumogiri: false });
+                               tsumogiri: false, possible_actions:[] });
         });
 
         test('fulou (チー)', ()=>{
@@ -629,7 +630,21 @@ suite('convert', ()=>{
             convmsg({ fulou: { l: 3, m: 'p505=' } });
             assert.deepEqual(convmsg({ gang: { l: 3, m: 'p505=5' } }),
                              { type:'kakan', actor: 1,
-                               pai:'5p', consumed:['5p','5pr','5p'] });
+                               pai:'5p', consumed:['5p','5pr','5p'],
+                               possible_actions:[] });
+        });
+        test('gang (加槓、自分)', ()=>{
+            const convmsg = init();
+            convmsg({ zimo: { l: 0, p:'s3' } });
+            convmsg({ dapai: { l: 0, p:'z4'} });
+            convmsg({ zimo: { l: 0, p:'s3' } });
+            convmsg({ dapai: { l: 0, p:'z3'} });
+            convmsg({ dapai: { l: 3, p:'s3' } });
+            convmsg({ fulou: { l: 0, m: 's333-' } });
+            convmsg({ zimo: { l: 0, p:'s3' } });
+            assert.deepEqual(convmsg({ gang: { l: 0, m: 's333-3' } }),
+                             { type:'kakan', actor: 2,
+                               pai:'3s', consumed:['3s','3s','3s'] });
         });
 
         test('gangzimo (マスクあり)', ()=>{
@@ -640,7 +655,8 @@ suite('convert', ()=>{
         test('gangzimo (マスクなし)', ()=>{
             const convmsg = init();
             assert.deepEqual(convmsg({ gangzimo: { l: 0, p: 'm2' } }),
-                             { type:'tsumo', actor: 2, pai:'2m' });
+                             { type:'tsumo', actor: 2, pai:'2m',
+                               possible_actions:[] });
         });
 
         test('kaigang', ()=>{
