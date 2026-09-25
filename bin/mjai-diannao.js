@@ -32,8 +32,7 @@ const outfile = argv.output && path.resolve(argv.output);
 
 const rule = Majiang.rule();
 
-const converter = require('../lib/convmsg');
-const convreply = require('../lib/convreply')();
+const convert = require('../lib/convert');
 
 const name = argv.legacy ? `電脳麻将[${argv.legacy}]` : '電脳麻将'
 
@@ -42,51 +41,52 @@ const sock = net.connect(port, host, ()=>{
     const line = readline.createInterface(sock);
 
     const player  = new Player();
-    const convmsg = converter(rule);
+    const convreq = convert.convreq(rule);
+    const convres = convert.convres();
 
-    function send(reply) {
-        if (argv.verbose) console.log('->', util.inspect(reply,
+    function send(rep) {
+        if (argv.verbose) console.log('->', util.inspect(rep,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-        sock.write(JSON.stringify(reply) + '\n');
+        sock.write(JSON.stringify(rep) + '\n');
     }
 
     line.on('line', (data)=>{
-        let msg = JSON.parse(data);
-        if (argv.verbose) console.log('<-', util.inspect(msg,
+        let req = JSON.parse(data);
+        if (argv.verbose) console.log('<-', util.inspect(req,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
 
-        if (msg.type == 'hello') {
+        if (req.type == 'hello') {
             send({ type: 'join', name: name, room: room });
             return;
         }
-        if (msg.type == "error") {
-            console.error(msg.message);
-            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+        if (req.type == "error") {
+            console.error(req.message);
+            if (outfile) fs.writeFileSync(outfile, JSON.stringify(convreq()),
                                             'utf-8');
             process.exit(-1);
         }
-        if (msg.type == 'start_kyoku') {
-            if (player.model.qijia == null) player.model.qijia = msg.oya;
+        if (req.type == 'start_kyoku') {
+            if (player.model.qijia == null) player.model.qijia = req.oya;
         }
 
-        let act = convmsg(msg);
-        if (act && act.kaigang) {
-            player.action(act);
-            send(convreply(msg));
+        let msg = convreq(req);
+        if (msg && msg.kaigang) {
+            player.action(msg);
+            send(convres(req));
         }
-        else if (act) {
-            player.action(act, (rep = {})=>{
-                send(convreply(msg, player._id, rep));
+        else if (msg) {
+            player.action(msg, (rep = {})=>{
+                send(convres(req, rep));
             });
         }
         else {
-            send(convreply(msg));
+            send(convres(req));
         }
     });
     sock.on('close', ()=>{
-        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convmsg()),
+        if (outfile) fs.writeFileSync(outfile, JSON.stringify(convreq()),
                                         'utf-8');
     });
 
