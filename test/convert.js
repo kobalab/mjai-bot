@@ -252,6 +252,13 @@ suite('convert', ()=>{
             assert.deepEqual(convreq({ type:'tsumo', actor: 0, pai:'8m' }),
                             { gangzimo: { l: 2, p:'m8' } });
         });
+        test('type: "tsumo" (カンヅモ → ツモ)', ()=>{
+            const convreq = init(rule);
+            convreq({ type:'ankan', actor: 3, consumed:['N','N','N','N'] });
+            convreq({ type:'tsumo', actor: 3, pai:'?' });
+            assert.deepEqual(convreq({ type:'tsumo', actor: 3, pai:'7m' }),
+                            { zimo: { l: 1, p:'m7' } });
+        });
 
         test('type: "dora"', ()=>{
             const convreq = init(rule);
