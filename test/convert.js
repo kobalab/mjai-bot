@@ -841,4 +841,139 @@ suite('convert', ()=>{
             assert.deepEqual(convrep({ type:'none' }), {});
         });
     });
+
+    suite('possible_actions', ()=>{
+
+        function init(param = {}, script = []) {
+
+            const convmsg = convert.convmsg();
+
+            const kaiju = {
+                id:     param.id   ?? 2,
+                rule:   param.rule ?? rule,
+                title:  '',
+                player: ['','','',''],
+                qijia:  param.qijia ?? 1
+            };
+            convmsg({ kaiju: kaiju });
+
+            const qipai = {
+                zhuangfeng: param.zhuangfeng ?? 0,
+                jushu:      param.jushu      ?? 0,
+                changbang:  param.changbang  ?? 0,
+                lizhibang:  param.lizhibang  ?? 0,
+                defen:      param.defen      ?? [ 25000, 25000, 25000, 25000 ],
+                baopai:     param.baopai     ?? 'z2',
+                shoupai:    ['','','','']
+            };
+            if (param.shoupai) {
+                let l = (kaiju.id + 4 - kaiju.qijia + 4 - qipai.jushu) % 4;
+                qipai.shoupai[l] = param.shoupai;
+            }
+            convmsg({ qipai: qipai });
+
+            for (let msg of script) convmsg(msg);
+
+            return convmsg;
+        }
+
+        test('possible_hule (和了形なし)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234999' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'s5' } }).possible_actions,
+                []);
+        });
+        test('possible_hule (役なし)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions,
+                []);
+        });
+        test('possible_hule (役なし、嶺上開花)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' },
+                                [{ zimo: { l: 1, p:'s9'} },
+                                 { gang: { l: 1, m:'s999-9' } }]);
+            assert.deepEqual(
+                convmsg({ gangzimo: { l: 1, p:'s1' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 2, pai:'1s' }]);
+        });
+        test('possible_hule (役なし、槍槓)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s2345,s999-' },
+                                [{ dapai: { l: 2, p:'s1'} },
+                                 { fulou: { l: 3, m:'s111-'} },
+                                 { zimo: { l: 1, p: 's4' } },
+                                 { dapai: { l: 1, p:'s5' } },
+                                 { zimo: { l: 3, p:'' } }]);
+            assert.deepEqual(
+                convmsg({ gang: { l: 3, m:'s111-1' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 0, pai:'1s' }]);
+        });
+        test('possible_hule (役なし、ハイテイ)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' });
+            while (convmsg().shan.paishu > 0) {
+                convmsg({ zimo: { l: 0, p:'' } });
+            }
+            assert.deepEqual(
+                convmsg({ dapai: { l : 0, p:'s4' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 1, pai:'4s' }]);
+        });
+        test('possible_hule (役あり、ツモ)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'s4' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 2, pai:'4s' }]);
+        });
+        test('possible_hule (役あり、ロン)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' });
+            assert.deepEqual(
+                convmsg({ dapai: { l: 3, p:'s4' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 0, pai:'4s' }]);
+        });
+        test('possible_hule (役あり、フリテン)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' },
+                                [{ zimo: { l: 1, p:'s1' } },
+                                 { dapai: { l: 1, p:'s1_' } }]);
+            assert.deepEqual(
+                convmsg({ dapai: { l: 2, p:'s4' } }).possible_actions,
+                []);
+        });
+        test('possible_hule (役あり、フリテン(見逃し))', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' },
+                                [{ dapai: { l: 2, p:'s1' } }]);
+            assert.deepEqual(
+                convmsg({ dapai: { l: 3, p:'s4' } }).possible_actions,
+                []);
+        });
+        test('possible_hule (役あり、フリテン(加槓見逃し))', ()=>{
+            const convmsg = init({ shoupai:'m123p123s23999z12' },
+                                [{ dapai: { l: 2, p:'s4' } },
+                                 { fulou: { l: 3, m:'s444-' } },
+                                 { zumo: { l: 1, p:'z1' } },
+                                 { dapai: { l: 1, p:'z2' } },
+                                 { gang: { l: 3, m:'s444-4'} }]);
+            assert.deepEqual(
+                convmsg({ dapai: { l: 2, p:'s1' } }).possible_actions,
+                []);
+        });
+        test('possible_hule (役あり、フリテン(見逃し → 解消))', ()=>{
+            const convmsg = init({ shoupai:'m123p123s1234,s999-' },
+                                [{ dapai: { l: 2, p:'s1' } },
+                                 { zimo: { l: 1, p:'z5' } },
+                                 { dapai: { l: 1, p:'z5_'} }]);
+            assert.deepEqual(
+                convmsg({ dapai: { l: 3, p:'s4' } }).possible_actions,
+                [{ type:'hora', actor: 2, target: 0, pai:'4s' }]);
+        });
+        test('possible_hule (役あり、フリテン(リーチ後見逃し))', ()=>{
+            const convmsg = init({ shoupai:'m123p123s23999z12' },
+                                [{ zimo: { l: 1, p:'z1' } },
+                                 { dapai: { l: 1, p:'z2*' } },
+                                 { dapai: { l: 2, p:'s4' } },
+                                 { zimo: { l: 1, p:'z5' } },
+                                 { dapai: { l: 1, p:'z5_' } }]);
+            assert.deepEqual(
+                convmsg({ dapai: { l: 3, p:'s1' } }).possible_actions,
+                []);
+        });
+    });
 });
