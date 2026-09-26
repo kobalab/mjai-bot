@@ -1000,5 +1000,20 @@ suite('convert', ()=>{
                    consumed:['9s','9s'] }]);
 
         });
+
+        test('possible_gang (暗槓)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s23999z12' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'s9' } }).possible_actions,
+                [{ type:'ankan', actor: 2,
+                   consumed:['9s','9s','9s','9s'] }]);
+        });
+        test('possible_gang (加槓)', ()=>{
+            const convmsg = init({ shoupai:'m123s23z12,s999-,p1111' });
+            assert.deepEqual(
+                convmsg({ gangzimo: { l: 1, p:'s9' } }).possible_actions,
+                [{ type:'kakan', actor: 2, pai:'9s',
+                   consumed:['9s','9s','9s'] }]);
+        });
     });
 });
