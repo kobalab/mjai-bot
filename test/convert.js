@@ -1036,5 +1036,12 @@ suite('convert', ()=>{
                 convmsg({ mjai: { type:'reach', actor: 2 } }).possible_actions,
                 []);
         });
+
+        test('possible_pingju', ()=>{
+            const convmsg = init({ shoupai:'m19p123s6789z4567' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions,
+                [{ type: 'ryukyoku', actor: 2, reason: 'kyushukyuhai' }]);
+        });
     });
 });
