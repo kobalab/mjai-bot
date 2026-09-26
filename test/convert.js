@@ -975,5 +975,30 @@ suite('convert', ()=>{
                 convmsg({ dapai: { l: 3, p:'s1' } }).possible_actions,
                 []);
         });
+
+        test('possible_fulou (チー)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s23999z12' });
+            assert.deepEqual(
+                convmsg({ dapai: { l: 0, p:'s4' } }).possible_actions,
+                [{ type:'chi', actor: 2, target: 1, pai:'4s',
+                   consumed:['2s','3s'] }]);
+        });
+        test('possible_fulou (ポン)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s2399z123' });
+            assert.deepEqual(
+                convmsg({ dapai: { l: 3, p:'s9' } }).possible_actions,
+                [{ type:'pon', actor: 2, target: 0, pai:'9s',
+                   consumed:['9s','9s'] }]);
+        });
+        test('possible_fulou (大明槓)', ()=>{
+            const convmsg = init({ shoupai:'m123p123s23999z12' });
+            assert.deepEqual(
+                convmsg({ dapai: { l: 2, p:'s9' } }).possible_actions,
+                [{ type:'daiminkan', actor: 2, target: 3, pai:'9s',
+                   consumed:['9s','9s','9s'] },
+                 { type:'pon', actor: 2, target: 3, pai:'9s',
+                   consumed:['9s','9s'] }]);
+
+        });
     });
 });
