@@ -572,9 +572,9 @@ suite('convert', ()=>{
         });
         test('zimo (マスクなし)', ()=>{
             const convmsg = init();
-            assert.deepEqual(convmsg({ zimo: { l: 0, p: 'm2' } }),
-                             { type:'tsumo', actor: 2, pai:'2m',
-                               possible_actions:[] });
+            let msg = convmsg({ zimo: { l: 0, p: 'm2' } });
+            delete msg.possible_actions;
+            assert.deepEqual(msg, { type:'tsumo', actor: 2, pai:'2m' });
         });
 
         test('dapai (手出し)', ()=>{
@@ -654,9 +654,9 @@ suite('convert', ()=>{
         });
         test('gangzimo (マスクなし)', ()=>{
             const convmsg = init();
-            assert.deepEqual(convmsg({ gangzimo: { l: 0, p: 'm2' } }),
-                             { type:'tsumo', actor: 2, pai:'2m',
-                               possible_actions:[] });
+            let msg = convmsg({ gangzimo: { l: 0, p: 'm2' } });
+            delete msg.possible_actions;
+            assert.deepEqual(msg, { type:'tsumo', actor: 2, pai:'2m' });
         });
 
         test('kaigang', ()=>{
@@ -880,13 +880,15 @@ suite('convert', ()=>{
         test('possible_hule (和了形なし)', ()=>{
             const convmsg = init({ shoupai:'m123p123s1234z123' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s5' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s5' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 []);
         });
         test('possible_hule (役なし)', ()=>{
             const convmsg = init({ shoupai:'m123p123s1234,s999-' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 []);
         });
         test('possible_hule (役なし、嶺上開花)', ()=>{
@@ -894,7 +896,8 @@ suite('convert', ()=>{
                                 [{ zimo: { l: 1, p:'s9'} },
                                  { gang: { l: 1, m:'s999-9' } }]);
             assert.deepEqual(
-                convmsg({ gangzimo: { l: 1, p:'s1' } }).possible_actions,
+                convmsg({ gangzimo: { l: 1, p:'s1' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type:'hora', actor: 2, target: 2, pai:'1s' }]);
         });
         test('possible_hule (役なし、槍槓)', ()=>{
@@ -920,7 +923,8 @@ suite('convert', ()=>{
         test('possible_hule (役あり、ツモ)', ()=>{
             const convmsg = init({ shoupai:'m123p123s1234,s999-' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s4' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s4' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type:'hora', actor: 2, target: 2, pai:'4s' }]);
         });
         test('possible_hule (役あり、ロン)', ()=>{
@@ -1004,14 +1008,16 @@ suite('convert', ()=>{
         test('possible_gang (暗槓)', ()=>{
             const convmsg = init({ shoupai:'m123p123s23999z12' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s9' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s9' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type:'ankan', actor: 2,
                    consumed:['9s','9s','9s','9s'] }]);
         });
         test('possible_gang (加槓)', ()=>{
             const convmsg = init({ shoupai:'m123s23z12,s999-,p1111' });
             assert.deepEqual(
-                convmsg({ gangzimo: { l: 1, p:'s9' } }).possible_actions,
+                convmsg({ gangzimo: { l: 1, p:'s9' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type:'kakan', actor: 2, pai:'9s',
                    consumed:['9s','9s','9s'] }]);
         });
@@ -1019,7 +1025,8 @@ suite('convert', ()=>{
         test('possible_lizhi', ()=>{
             const convmsg = init({ shoupai:'m123p123s1234999' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s5' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s5' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type:'reach', actor: 2 }]);
         });
         test('possible_lizhi (リーチ宣言)', ()=>{
@@ -1040,8 +1047,25 @@ suite('convert', ()=>{
         test('possible_pingju', ()=>{
             const convmsg = init({ shoupai:'m19p123s6789z4567' });
             assert.deepEqual(
-                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions,
+                convmsg({ zimo: { l: 1, p:'s1' } }).possible_actions
+                                            .filter(r => r.type != 'dahai'),
                 [{ type: 'ryukyoku', actor: 2, reason: 'kyushukyuhai' }]);
+        });
+
+        test('possible_dapai', ()=>{
+            const convmsg = init({ shoupai:'m123p122s1233999' });
+            assert.deepEqual(
+                convmsg({ zimo: { l: 1, p:'m1' } }).possible_actions,
+                [{ type:'dahai', actor: 2, pai:'1m', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'2m', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'3m', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'1p', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'2p', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'1s', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'2s', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'3s', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'9s', tsumogiri: false },
+                 { type:'dahai', actor: 2, pai:'1m', tsumogiri: true }]);
         });
     });
 });
