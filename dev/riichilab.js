@@ -54,7 +54,8 @@ ws.on('open', ()=>{
     ws.on('message', (data)=>{
         let req = JSON.parse(data);
         if (argv.verbose) console.log('<-', util.inspect(req,
-                                                { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
 
         if (req.type == "error") {
             console.error(req.message);
@@ -66,7 +67,8 @@ ws.on('open', ()=>{
         if (req.type == 'request_action') {
             res.request_id = req.request_id;
             if (argv.verbose) console.log('->', util.inspect(res,
-                                                { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
             ws.send(JSON.stringify(res) + '\n');
             return;
         }
