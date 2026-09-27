@@ -45,82 +45,82 @@ const sock = net.connect(port, host, ()=>{
 
     let bot, id, pai, scores = [ 25000, 25000, 25000, 25000 ];
 
-    function fixmsg(data) {
-        let msg = JSON.parse(data);
+    function fixreq(data) {
+        let req = JSON.parse(data);
 
-        if (msg.type == 'hello') {
-            if (argv.verbose) console.log('<-', util.inspect(msg,
+        if (req.type == 'hello') {
+            if (argv.verbose) console.log('<-', util.inspect(req,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-            let rep = { type: 'join', name: name, room: room };
-            if (argv.verbose) console.log('->', util.inspect(rep,
+            let res = { type: 'join', name: name, room: room };
+            if (argv.verbose) console.log('->', util.inspect(res,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-            sock.write(JSON.stringify(rep) + '\n');
+            sock.write(JSON.stringify(res) + '\n');
             return;
         }
-        else if (msg.type == 'start_game') {
-            id = msg.id;
+        else if (req.type == 'start_game') {
+            id = req.id;
             if (! argv.akagi) {
-                if (argv.verbose) console.log('<-', util.inspect(msg,
+                if (argv.verbose) console.log('<-', util.inspect(req,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
                 bot = exec_mortal(id);
-                readline.createInterface(bot.stdout).on('line', fixrep);
-                let rep = { type: 'none' };
-                if (argv.verbose) console.log('->', util.inspect(rep,
+                readline.createInterface(bot.stdout).on('line', fixres);
+                let res = { type: 'none' };
+                if (argv.verbose) console.log('->', util.inspect(res,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-                sock.write(JSON.stringify(rep) + '\n');
+                sock.write(JSON.stringify(res) + '\n');
                 return;
             }
         }
-        else if (msg.type == 'start_kyoku') {
-            if (! msg.scores) msg.scores = scores;
+        else if (req.type == 'start_kyoku') {
+            if (! req.scores) req.scores = scores;
         }
-        else if (msg.type == 'error') {
-            console.error(msg.message);
+        else if (req.type == 'error') {
+            console.error(req.message);
             process.exit(-1);
         }
 
-        if (argv.verbose) console.log('<-', util.inspect(msg,
+        if (argv.verbose) console.log('<-', util.inspect(req,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-        if (argv.akagi) bot.stdin.write(JSON.stringify([ msg ]) + '\n');
-        else            bot.stdin.write(JSON.stringify(msg) + '\n');
+        if (argv.akagi) bot.stdin.write(JSON.stringify([ req ]) + '\n');
+        else            bot.stdin.write(JSON.stringify(req) + '\n');
 
-        if (msg.scores) scores = msg.scores;
-        if (msg.pai)    pai    = msg.pai;
+        if (req.scores) scores = req.scores;
+        if (req.pai)    pai    = req.pai;
 
-        if (msg.type == 'end_game') {
+        if (req.type == 'end_game') {
             if (! argv.akagi) bot.kill('SIGINT');
         }
     }
 
-    function fixrep(data) {
-        let rep = JSON.parse(data);
+    function fixres(data) {
+        let res = JSON.parse(data);
 
-        if (rep.type == 'hora') {
-            rep.pai = pai;
+        if (res.type == 'hora') {
+            res.pai = pai;
         }
-        else if (rep.type == 'ryukyoku') {
-            rep.actor = id;
-            rep.reason = 'kyushukyuhai';
+        else if (res.type == 'ryukyoku') {
+            res.actor = id;
+            res.reason = 'kyushukyuhai';
         }
-        delete rep.meta;
+        delete res.meta;
 
-        if (argv.verbose) console.log('->', util.inspect(rep,
+        if (argv.verbose) console.log('->', util.inspect(res,
                                             { depth: null,
                                               colors: process.stdout.isTTY }));
-        sock.write(JSON.stringify(rep) + '\n');
+        sock.write(JSON.stringify(res) + '\n');
     }
 
     if (argv.akagi) {
         bot = exec_akagi();
-        readline.createInterface(bot.stdout).on('line', fixrep);
+        readline.createInterface(bot.stdout).on('line', fixres);
     }
 
-    readline.createInterface(sock).on('line', fixmsg);
+    readline.createInterface(sock).on('line', fixreq);
 
 }).on('error', (e)=>{
     console.error((e.errors?.[0] ?? e).toString());
