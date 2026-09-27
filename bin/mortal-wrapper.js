@@ -41,37 +41,35 @@ function exec_akagi() {
                       stdio: ['pipe','pipe','inherit'] });
 }
 
+function reply(sock, res) {
+    if (argv.verbose) console.log('->', util.inspect(res,
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
+    sock.write(JSON.stringify(res) + '\n');
+}
+
 const sock = net.connect(port, host, ()=>{
 
     let bot, id, pai, scores = [ 25000, 25000, 25000, 25000 ];
 
     function fixreq(data) {
         let req = JSON.parse(data);
+        if (argv.verbose) console.log('<-', util.inspect(req,
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
 
         if (req.type == 'hello') {
-            if (argv.verbose) console.log('<-', util.inspect(req,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
             let res = { type: 'join', name: name, room: room };
-            if (argv.verbose) console.log('->', util.inspect(res,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
-            sock.write(JSON.stringify(res) + '\n');
+            reply(sock, res);
             return;
         }
         else if (req.type == 'start_game') {
             id = req.id;
             if (! argv.akagi) {
-                if (argv.verbose) console.log('<-', util.inspect(req,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
                 bot = exec_mortal(id);
                 readline.createInterface(bot.stdout).on('line', fixres);
                 let res = { type: 'none' };
-                if (argv.verbose) console.log('->', util.inspect(res,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
-                sock.write(JSON.stringify(res) + '\n');
+                reply(sock, res);
                 return;
             }
         }
@@ -83,9 +81,6 @@ const sock = net.connect(port, host, ()=>{
             process.exit(-1);
         }
 
-        if (argv.verbose) console.log('<-', util.inspect(req,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
         if (argv.akagi) bot.stdin.write(JSON.stringify([ req ]) + '\n');
         else            bot.stdin.write(JSON.stringify(req) + '\n');
 
@@ -109,10 +104,7 @@ const sock = net.connect(port, host, ()=>{
         }
         delete res.meta;
 
-        if (argv.verbose) console.log('->', util.inspect(res,
-                                            { depth: null,
-                                              colors: process.stdout.isTTY }));
-        sock.write(JSON.stringify(res) + '\n');
+        reply(sock, res);
     }
 
     if (argv.akagi) {
