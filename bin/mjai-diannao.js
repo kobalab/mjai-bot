@@ -82,6 +82,7 @@ const sock = net.connect(port, host, ()=>{
             });
         }
         else {
+            if (req.type == 'end_game') return sock.destroy();
             send(convres(req));
         }
     });
