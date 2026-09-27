@@ -15,11 +15,11 @@ const argv = require('yargs')
     .option('output',  { alias: 'o'                })
     .option('legacy',  { alias: 'l', type: 'string'})
     .option('verbose', { alias: 'v', boolean: true })
-    .demandCommand(1)
     .argv;
 
 let [ , host, port, room ]
-            = argv._[0].match(/^mjsonp:\/\/(.+):(\d+)\/([^\/]+)/) || [];
+            = (argv._[0] || 'mjsonp://127.0.0.1:11600/default')
+                .match(/^mjsonp:\/\/(.+):(\d+)\/([^\/]+)/) || [];
 if (! host) {
     console.error(`Error: ${argv._[0]} is bad URL.`);
     process.exit(-1);
@@ -82,6 +82,7 @@ const sock = net.connect(port, host, ()=>{
             });
         }
         else {
+            if (req.type == 'end_game') return sock.destroy();
             send(convres(req));
         }
     });
