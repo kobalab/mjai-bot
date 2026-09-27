@@ -50,10 +50,12 @@ const sock = net.connect(port, host, ()=>{
 
         if (msg.type == 'hello') {
             if (argv.verbose) console.log('<-', util.inspect(msg,
-                                            { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
             let rep = { type: 'join', name: name, room: room };
             if (argv.verbose) console.log('->', util.inspect(rep,
-                                                { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
             sock.write(JSON.stringify(rep) + '\n');
             return;
         }
@@ -61,12 +63,14 @@ const sock = net.connect(port, host, ()=>{
             id = msg.id;
             if (! argv.akagi) {
                 if (argv.verbose) console.log('<-', util.inspect(msg,
-                                                { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
                 bot = exec_mortal(id);
                 readline.createInterface(bot.stdout).on('line', fixrep);
                 let rep = { type: 'none' };
                 if (argv.verbose) console.log('->', util.inspect(rep,
-                                                { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
                 sock.write(JSON.stringify(rep) + '\n');
                 return;
             }
@@ -80,7 +84,8 @@ const sock = net.connect(port, host, ()=>{
         }
 
         if (argv.verbose) console.log('<-', util.inspect(msg,
-                                            { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
         if (argv.akagi) bot.stdin.write(JSON.stringify([ msg ]) + '\n');
         else            bot.stdin.write(JSON.stringify(msg) + '\n');
 
@@ -105,7 +110,8 @@ const sock = net.connect(port, host, ()=>{
         delete rep.meta;
 
         if (argv.verbose) console.log('->', util.inspect(rep,
-                                            { depth: null, colors: true }));
+                                            { depth: null,
+                                              colors: process.stdout.isTTY }));
         sock.write(JSON.stringify(rep) + '\n');
     }
 
