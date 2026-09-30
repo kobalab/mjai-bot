@@ -32,13 +32,13 @@ function exec_mortal(id) {
                     { cwd:   workdir,
                       env:   {  ...process.env,
                                 MORTAL_REVIEW_MODE: 1 },
-                      stdio: ['pipe','pipe','inherit'] });
+                      stdio: ['pipe','pipe','ignore'] });
 }
 
 function exec_akagi() {
     return spawn('uv', ['run','python','bot.py'],
                     { cwd:   workdir,
-                      stdio: ['pipe','pipe','inherit'] });
+                      stdio: ['pipe','pipe','ignore'] });
 }
 
 function reply(sock, res) {
@@ -89,6 +89,7 @@ const sock = net.connect(port, host, ()=>{
 
         if (req.type == 'end_game') {
             if (! argv.akagi) bot.kill('SIGINT');
+            process.exit();
         }
     }
 
