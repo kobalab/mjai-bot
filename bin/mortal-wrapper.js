@@ -103,6 +103,7 @@ const sock = net.connect(port, host, ()=>{
 
         if (req.type == 'end_game') {
             if (! argv.akagi) bot.kill('SIGINT');
+            process.exit();
         }
     }
 
