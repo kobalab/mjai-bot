@@ -27,18 +27,26 @@ const workdir = argv.akagi ? path.resolve(argv._[1])
 
 const name = argv.akagi ? 'Akagi' : 'Mortal';
 
-function exec_mortal(id) {
-    return spawn('uv', ['run','python','mortal.py', id],
-                    { cwd:   workdir,
-                      env:   {  ...process.env,
-                                MORTAL_REVIEW_MODE: 1 },
-                      stdio: ['pipe','pipe','ignore'] });
+function exec_mortal(id, version) {
+    let options = { cwd:   workdir,
+                    stdio: ['pipe','pipe','ignore'] };
+    if (version == 1) options.env = { ...process.env,
+                                      MORTAL_REVIEW_MODE: 1 };
+    return spawn('uv', ['run','python','mortal.py', id], options)
+                .on('error', (e)=>{
+                    console.error(e.toString());
+                    process.exit(-1);
+                });
 }
 
 function exec_akagi() {
     return spawn('uv', ['run','python','bot.py'],
                     { cwd:   workdir,
-                      stdio: ['pipe','pipe','ignore'] });
+                      stdio: ['pipe','pipe','ignore'] })
+                .on('error', (e)=>{
+                    console.error(e.toString());
+                    process.exit(-1);
+                });
 }
 
 function reply(sock, res) {
@@ -50,7 +58,7 @@ function reply(sock, res) {
 
 const sock = net.connect(port, host, ()=>{
 
-    let bot, id, pai, scores = [ 25000, 25000, 25000, 25000 ];
+    let bot, id, version, pai, scores = [ 25000, 25000, 25000, 25000 ];
 
     function fixreq(data) {
         let req = JSON.parse(data);
@@ -59,17 +67,16 @@ const sock = net.connect(port, host, ()=>{
                                               colors: process.stdout.isTTY }));
 
         if (req.type == 'hello') {
-            let res = { type: 'join', name: name, room: room };
-            reply(sock, res);
+            version = req.protocol_version;
+            reply(sock, { type: 'join', name: name, room: room });
             return;
         }
         else if (req.type == 'start_game') {
             id = req.id;
             if (! argv.akagi) {
-                bot = exec_mortal(id);
+                bot = exec_mortal(id, version);
                 readline.createInterface(bot.stdout).on('line', fixres);
-                let res = { type: 'none' };
-                reply(sock, res);
+                reply(sock, { type: 'none' });
                 return;
             }
         }
@@ -88,8 +95,16 @@ const sock = net.connect(port, host, ()=>{
         if (req.pai)    pai    = req.pai;
 
         if (req.type == 'end_game') {
-            if (! argv.akagi) bot.kill('SIGINT');
+            if (! argv.akagi && version == 1) bot.kill('SIGINT');
             process.exit();
+        }
+
+        if (argv.akagi || version == 1) return;
+        if ((! req.possible_actions && ! req.cannot_dahai) ||
+            req.possible_actions && ! req.possible_actions.length
+                && (req.type == 'dahai' || req.type == 'kakan'))
+        {
+            reply(sock, { type: 'none' });
         }
     }
 

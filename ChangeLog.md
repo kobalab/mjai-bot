@@ -1,3 +1,10 @@
+## v1.4.0 / 2026-10-01
+
+  - akochan-wrapper を追加
+  - mortal-wrapper がなるべく MORTAL_REVIEW_MODE に頼らないよう修正
+  - 脆弱性警告に対処
+    - serialize-javascript 7.1.1 → 7.1.2
+
 ### v1.3.1 / 2026-09-30
 
   - mjai-diannao のソケット切断方法を修正
