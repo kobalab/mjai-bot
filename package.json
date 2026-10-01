@@ -7,7 +7,8 @@
   },
   "bin": {
     "mjai-diannao": "./bin/mjai-diannao.js",
-    "mortal-wrapper": "./bin/mortal-wrapper.js"
+    "mortal-wrapper": "./bin/mortal-wrapper.js",
+    "akochan-wrapper": "./bin/akochan-wrapper.js"
   },
   "exports": {
     "./convert": "./lib/convert.js"
