@@ -62,6 +62,26 @@ Mjaiプロトコルの通信を表示します
 **注意:** Akagi-MjaiBot-Mortal に含まれる `mortal.pth` は動作確認用のモデルです(強くありません)。
 実戦向けの強いモデルは別途入手する必要があります。
 
+### akochan-wrapper mjsonp://*host*:*port*/*room* *akochan-dir*
+
+[akochan](https://github.com/critter-mj/akochan) Mjaiボットをネットワーク越しにMjaiサーバーに接続可能にするラッパー。
+ボットは `LD_LIBRARY_PATH=. ./system.exe mjai_client` で起動します。
+
+#### host
+接続するMjaiサーバーのホスト名あるいはIPアドレスを指定します
+
+#### port
+接続するMjaiサーバーのポート番号を指定します
+
+#### room
+接続するMjaiサーバーのルーム名を指定します
+
+#### akochan-dir
+akochanのGitHubリポジトリを展開したディレクトリを指定します。
+
+#### --verbose, -v
+Mjaiプロトコルの通信を表示します
+
 ## 制限事項
 現在(2026年9月) gem でインストールできる mjai にはバグがあり暗槓後のリーチを不正動作と判定してしまいますが、ボットはそれを避ける動作はしません。
 
