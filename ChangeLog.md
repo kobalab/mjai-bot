@@ -1,3 +1,7 @@
+### v1.4.1 / 2026-10-01
+
+  - READMEにakochan-wrapperの説明を追加
+
 ## v1.4.0 / 2026-10-01
 
   - akochan-wrapper を追加
