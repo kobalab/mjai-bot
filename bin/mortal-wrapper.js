@@ -32,13 +32,21 @@ function exec_mortal(id, version) {
                     stdio: ['pipe','pipe','ignore'] };
     if (version == 1) options.env = { ...process.env,
                                       MORTAL_REVIEW_MODE: 1 };
-    return spawn('uv', ['run','python','mortal.py', id], options);
+    return spawn('uv', ['run','python','mortal.py', id], options)
+                .on('error', (e)=>{
+                    console.error(e.toString());
+                    process.exit(-1);
+                });
 }
 
 function exec_akagi() {
     return spawn('uv', ['run','python','bot.py'],
                     { cwd:   workdir,
-                      stdio: ['pipe','pipe','ignore'] });
+                      stdio: ['pipe','pipe','ignore'] })
+                .on('error', (e)=>{
+                    console.error(e.toString());
+                    process.exit(-1);
+                });
 }
 
 function reply(sock, res) {
