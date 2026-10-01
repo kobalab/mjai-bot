@@ -91,7 +91,7 @@ const sock = net.connect(port, host, ()=>{
             process.exit();
         }
 
-        if (version == 1) return;
+        if (argv.akagi || version == 1) return;
         if ((! req.possible_actions && ! req.cannot_dahai) ||
             req.possible_actions && ! req.possible_actions.length
                 && (req.type == 'dahai' || req.type == 'kakan'))
