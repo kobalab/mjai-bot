@@ -55,6 +55,7 @@ const server = net.connect(port, host, ()=>{
             server.write(data + '\n');
         }
         readline.createInterface(bot).on('line', response);
+        bot.on('close', ()=> process.exit());
 
     }).listen(()=>{
         execFile('./system.exe', ['mjai_client', wrapper.address().port],

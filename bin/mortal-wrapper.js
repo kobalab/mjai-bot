@@ -76,6 +76,7 @@ const sock = net.connect(port, host, ()=>{
             if (! argv.akagi) {
                 bot = exec_mortal(id, version);
                 readline.createInterface(bot.stdout).on('line', fixres);
+                bot.on('close', ()=> process.exit());
                 reply(sock, { type: 'none' });
                 return;
             }
@@ -126,6 +127,7 @@ const sock = net.connect(port, host, ()=>{
     if (argv.akagi) {
         bot = exec_akagi();
         readline.createInterface(bot.stdout).on('line', fixres);
+        bot.on('close', ()=> process.exit());
     }
 
     readline.createInterface(sock).on('line', fixreq);
