@@ -11,8 +11,7 @@
     "akochan-wrapper": "./bin/akochan-wrapper.js"
   },
   "scripts": {
-    "test": "mocha -u tdd",
-    "test:cover": "nyc -r lcov -r text npm test"
+    "start": "node bin/mjai-diannao.js -v"
   },
   "repository": {
     "type": "git",
