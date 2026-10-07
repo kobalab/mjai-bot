@@ -10,6 +10,8 @@ const net      = require('net');
 const readline = require('readline');
 const util     = require('util');
 
+const converter = require('@kobalab/mjai-converter');
+
 const argv = require('yargs')
     .usage('Usage: $0 mjsonp://<host>:<port>/<room>')
     .option('output',  { alias: 'o'                })
@@ -32,8 +34,6 @@ const outfile = argv.output && path.resolve(argv.output);
 
 const rule = Majiang.rule();
 
-const convert = require('../lib/convert');
-
 const name = argv.legacy ? `電脳麻将[${argv.legacy}]` : '電脳麻将'
 
 const sock = net.connect(port, host, ()=>{
@@ -41,8 +41,8 @@ const sock = net.connect(port, host, ()=>{
     const line = readline.createInterface(sock);
 
     const player  = new Player();
-    const convreq = convert.convreq(rule);
-    const convres = convert.convres();
+    const convreq = converter.convreq(rule);
+    const convres = converter.convres();
 
     function send(rep) {
         if (argv.verbose) console.log('->', util.inspect(rep,
