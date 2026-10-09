@@ -1,6 +1,6 @@
 {
   "name": "@kobalab/mjai-bot",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "Mjaiプロトコルにしたがい対局する麻雀ボット",
   "publishConfig": {
     "access": "public"
@@ -10,12 +10,8 @@
     "mortal-wrapper": "./bin/mortal-wrapper.js",
     "akochan-wrapper": "./bin/akochan-wrapper.js"
   },
-  "exports": {
-    "./convert": "./lib/convert.js"
-  },
   "scripts": {
-    "test": "mocha -u tdd",
-    "test:cover": "nyc -r lcov -r text npm test"
+    "start": "node bin/mjai-diannao.js -v"
   },
   "repository": {
     "type": "git",
@@ -34,13 +30,12 @@
   },
   "homepage": "https://github.com/kobalab/mjai-bot#readme",
   "dependencies": {
-    "@kobalab/majiang-ai": "^1.2.0",
+    "@kobalab/majiang-ai": "^1.3.0",
     "@kobalab/majiang-core": "^1.4.1",
+    "@kobalab/mjai-converter": "^1.0.0",
     "yargs": "^17.7.3"
   },
   "devDependencies": {
-    "mocha": "^12.0.2",
-    "nyc": "^18.0.0",
     "ws": "^8.21.3"
   }
 }

@@ -10,6 +10,8 @@ const util = require('util');
 
 const WebSocket = require('ws');
 
+const converter = require('@kobalab/mjai-converter');
+
 const argv = require('yargs')
     .usage('Usage: $0')
     .option('token',   { alias: 't', type: 'string', demandOption: true })
@@ -32,8 +34,6 @@ const url = 'wss://game.riichi.dev/ws/'
 
 const rule = Majiang.rule();
 
-const convert = require('../lib/convert');
-
 const ws = new WebSocket(url, {
     headers: {
         Authorization: `Bearer ${token}`
@@ -46,8 +46,8 @@ const ws = new WebSocket(url, {
 ws.on('open', ()=>{
 
     const player  = new Player();
-    const convreq = convert.convreq(rule);
-    const convres = convert.convres();
+    const convreq = converter.convreq(rule);
+    const convres = converter.convres();
 
     let res;
 
