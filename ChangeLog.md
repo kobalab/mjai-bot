@@ -1,3 +1,11 @@
+# v2.0.0 / 2026-10-09
+
+  - 電脳麻将 ↔︎ Mjai プロトコル変換ライブラリを削除
+    - @kobalab/mjai-converter をインストール
+    - mocha をアンインストール
+    - nyc をアンインストール
+  - @kobalab/majiang-ai 1.2.0 → 1.3.0
+
 ### v1.4.3 / 2026-10-04
 
   - プロトコル変換で type: "daiminkan" に possible_actions を設定しているバグを修正
