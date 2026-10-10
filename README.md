@@ -5,6 +5,8 @@
 [@kobalab/majiang-ai](https://www.npmjs.com/package/@kobalab/majiang-ai) を組み込んだ麻雀ボットです。
 **mjai-diannao** の接続先URL表記は Mjai の標準にしたがっていますので、Mjaiサーバーとともに起動するボットとして指定可能です。
 **mortal-wrapper** は [Mortal](https://github.com/Equim-chan/Mortal) の標準入出力ベースのMjaiボットをMjaiサーバーに接続可能にするラッパーです。
+**akochan-wrapper** は [akochan](https://github.com/critter-mj/akochan) のローカル接続しかできないMjaiボットを他ホストのMjaiサーバーに接続するラッパーです。
+
 
 ## インストール
 ```bash
@@ -64,7 +66,7 @@ Mjaiプロトコルの通信を表示します
 
 ### akochan-wrapper mjsonp://*host*:*port*/*room* *akochan-dir*
 
-[akochan](https://github.com/critter-mj/akochan) Mjaiボットをネットワーク越しにMjaiサーバーに接続可能にするラッパー。
+[akochan](https://github.com/critter-mj/akochan) のMjaiボットをネットワーク越しにMjaiサーバーに接続可能にするラッパー。
 ボットは `LD_LIBRARY_PATH=. ./system.exe mjai_client` で起動します。
 
 #### host
